@@ -32,13 +32,16 @@ for generating SVGs from different input modalities?}
 
 The thirteen analyzed methods fall into two broad 
 methodological families. 
-Optimization-based methods (LIVE, SAMVG, Im2Vec, 
+Optimization-based methods (LIVE, SAMVG, 
 VectorFusion, SVGDreamer, SVGDreamer++, NiVeL, and 
 NeuralSVG) operate by iteratively refining vector 
 parameters to match a target image or semantic 
 description. Dataset-driven methods (DeepSVG, DeepIcon, 
-LayerTracer, T2V-NPR, and SVGFusion) learn generation 
-from collections of existing SVGs. 
+LayerTracer, and SVGFusion) learn generation 
+from collections of existing SVGs. Im2Vec and T2V-NPR 
+are hybrids: Im2Vec is trained on raster images and 
+decodes in one pass, and T2V-NPR combines a trained 
+path prior with per-prompt optimization. 
 Chapter~\ref{ch:Landscape} described their input 
 modalities, which span raster images, text prompts, 
 and unconditional generation from latent distributions. 
@@ -127,8 +130,8 @@ open.
 
 The analysis also produced a set of conditions for 
 clean and editable SVG output (primitive count control, 
-semantically aligned decomposition, structured 
-supervision, informed initialization, and design-logic 
+semantic decomposition, constrained 
+supervision, informed initialization, and design-aware 
 priors) which represent a checklist for future model 
 design that does not currently exist in the literature.
 

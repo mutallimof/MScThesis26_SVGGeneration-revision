@@ -80,9 +80,9 @@ Just changing the representation alone changed the entire structural character o
 Reconstruction losses shows the same example from a different 
 angle. LIVE and SAMVG both minimize pixel error through 
 DiffVG~\cite{maLayerwiseImageVectorization2022, 
-zhuSAMVGMultistageImage2023}. Same loss function. But LIVE 
-starts from random initialization and ends up with 160 
-overlapping paths. SAMVG starts from segmentation masks and 
+zhuSAMVGMultistageImage2023}. Same kind of loss function. But LIVE 
+places each new path where the reconstruction error is largest 
+and ends up with up to 256 overlapping paths on complex images. SAMVG starts from segmentation masks and 
 produces cleaner boundaries with fewer primitives 
 (Figure~\ref{fig:init_comparison}). 
 That means, where optimization started, also made the difference.
@@ -129,9 +129,9 @@ Methods driven by diffusion-based supervision achieve visually
 detailed outputs by refining geometry until the rendered image 
 aligns with learned image priors. This refinement increases 
 structural complexity, but undermines usability at the same time. LIVE and VectorFusion 
-follow the optimization protocol which
-represents a single image using up to ~150 paths distributed 
-across multiple layers~\cite{maLayerwiseImageVectorization2022}. In that, 
+both follow this optimization pattern. LIVE represents a complex image with up to 
+256 paths added layer by layer~\cite{maLayerwiseImageVectorization2022}, and 
+VectorFusion uses 64 paths per SVG~\cite{jainVectorFusionTexttoSVGAbstracting2022}. In such a file, 
 selecting or modifying a single visual component requires 
 unlimited patience. SVGDreamer++ explicitly acknowledges this 
 failure, noting that optimization-based approaches produce 
@@ -148,7 +148,7 @@ as Figure~\ref{fig:realism_editability} illustrates.
     \begin{tabular}{cc}
     \textbf{SVGDreamer} & \textbf{SVGFusion} \\
     \small{256--512 paths, VPSD} & 
-    \small{8--15 layers, denoising} \\[4pt]
+    \small{few shapes, denoising} \\[4pt]
     \includegraphics[width=0.4\textwidth]{svgdreamer_example.png} &
     \includegraphics[width=0.4\textwidth]{svgfusion_example.png} \\
     \end{tabular}

@@ -19,12 +19,12 @@ these parameters became directly optimizable against image-based or semantic obj
 and SVGDreamer all build on this foundation~\cite{maLayerwiseImageVectorization2022, zhuSAMVGMultistageImage2023, 
 jainVectorFusionTexttoSVGAbstracting2022, xingSVGDreamerTextGuided2024}.
 This should make parametric outputs the most editable of any representation. Every shape is an explicit geometric object a designer can select. 
-But that breaks down at scale. LIVE uses 160 paths across five layers to represent a single image~\cite{maLayerwiseImageVectorization2022}. 
+But that breaks down at scale. On complex images, LIVE is run with up to 256 paths, added layer by layer~\cite{maLayerwiseImageVectorization2022}. 
 Open that output in Illustrator or Inkscape and the problem is the image looks fine, 
 but selecting a single object means clicking through dozens of overlapping fragments that do not correspond to any recognizable component. 
 When optimization needs to capture fine visual detail, it adds more paths rather than making existing ones more expressive. 
 SVGDreamer++~\cite{xingSVGDreamerAdvancingEditability2025} identifies this path entanglement explicitly as a failure mode of optimization-based parametric methods.
-The representation itself is not the problem. Nothing in the optimization process stops paths from piling up. which is the real issue for editability.
+The representation itself is not the problem. Nothing in the optimization process stops paths from piling up, which is the real issue for editability.
 
 
 
@@ -86,11 +86,12 @@ Most models do not stay cleanly inside one representation family. VectorFusion a
 primitives directly while using a latent diffusion model as the semantic prior. The parametric layer provides geometric 
 interpretability, while the latent model provides the semantic coherence that pure geometric optimization cannot achieve alone.
 
-NeuralSVG borrows an ordered assignment mechanism from DeepSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025} 
-that imposes hierarchy. Each shape index consistently maps 
+NeuralSVG imposes an order on its shapes with a dropout-based regularization: during training, the shape sequence 
+is randomly cut off, so the first shapes have to carry the coarse structure of the scene on their 
+own~\cite{polaczekNeuralSVGImplicitRepresentation2025}. Each shape index consistently maps 
 to the same visual region across iterations, which stabilizes training and makes individual shapes separable. 
 LayerTracer~\cite{songLayerTracerCognitiveAlignedLayered2025} crosses a different boundary: its training data is sequential 
-(step-by-step construction sequences from the Serpentine dataset), but the output is a layered parametric SVG where each layer 
+(step-by-step construction sequences built from about 20,000 layered SVGs made by designers), but the output is a layered parametric SVG where each layer 
 corresponds to a meaningful visual component. The model learns layer separation as a structural convention from how designers 
 actually build graphics. These combinations exist because no single 
 representation handles visual realism and structural clarity at the same time.
@@ -103,18 +104,22 @@ Whether an AI-generated SVG actually supports that depends more on how the model
 than on how the rendered output looks.
 
 The four rockets in Figure~\ref{fig:rocket_grid} show what this means concretely. 
-DeepSVG produces the rocket as a monochrome icon with around 15 to 30 paths. 
-It looks like an icon and not a photorealistic scene because the sequential 
+DeepSVG works with monochrome icons like this rocket, with around 15 to 30 paths. 
+The rocket in the figure is a sample from the SVG-Icons8 dataset, not a generated output, 
+but it shows the kind of output DeepSVG is trained to produce. 
+It stays at the level of an icon, not a photorealistic scene, because the sequential 
 representation cannot handle longer command sequences without accumulating errors. 
 A designer could open that file and rearrange things. SVGDreamer generates the same 
 subject using 256 to 512 optimized B\'{e}zier paths~\cite{xingSVGDreamerTextGuided2024}. 
 Visually rich but structurally opaque, most of those paths overlap without corresponding 
 to any recognizable component. NeuralSVG renders its rocket with exactly 16 shapes, 
 each mapped through an MLP~\cite{polaczekNeuralSVGImplicitRepresentation2025}. 
-That is roughly a 30x reduction in element count. SVGFusion sits in between, 
-producing 10 to 20 structured shapes including B\'{e}zier paths, circles, and 
-rectangles~\cite{xingSVGFusionScalableTexttoSVG2025}, 
-because its latent space was trained on real SVG files that use the full primitive vocabulary.
+That is roughly a 30x reduction in element count. SVGFusion does not sit in between. 
+Its rocket is built from only a handful of filled shapes, so in element count it is closer 
+to DeepSVG than to SVGDreamer. What differs is the vocabulary: SVGFusion can output 
+B\'{e}zier paths but also circles, rectangles, and 
+ellipses~\cite{xingSVGFusionScalableTexttoSVG2025}, 
+because its latent space was trained on real SVG files that use these elements.
 
 \begin{table}[h!]
 \centering
@@ -124,10 +129,10 @@ because its latent space was trained on real SVG files that use the full primiti
 \hline
 \textbf{Representation} & \textbf{Path Counts} & \textbf{Editability} & \textbf{Typical Output} \\
 \hline
-Parametric      & 160--512  & Low    & Visually rich, paths overlap heavily \\
+Parametric      & 64--512   & Low    & Visually rich, paths overlap heavily \\
 Sequential      & 15--30    & Medium & Clean icons, breaks on complex scenes \\
 Implicit neural & 16 (fixed)& High   & Few shapes, each semantically meaningful \\
-Latent          & 10--20    & Medium & Uses full SVG vocab, looks designed \\
+Latent          & Few (not reported) & Medium & Uses full SVG vocab, looks designed \\
 \hline
 \end{tabular}
 \end{table}
@@ -157,10 +162,12 @@ signals push the geometry in different directions.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.50\textwidth]{representation.png}
-    \caption{Outputs from four models across the four representation 
-    families, all depicting a rocket. Top left: DeepSVG 
-    (sequential), from the SVG-Icons8 
-    dataset~\cite{carlierDeepSVGHierarchicalGenerative2020}. Top 
+    \caption{Rockets illustrating the four representation 
+    families. Top left: a rocket icon from the SVG-Icons8 
+    dataset that DeepSVG (sequential) is trained 
+    on~\cite{carlierDeepSVGHierarchicalGenerative2020}; this 
+    is a dataset sample, not a DeepSVG output. The other three 
+    are generated outputs. Top 
     right: SVGDreamer (parametric). Bottom left: SVGFusion 
     (latent). Bottom right: NeuralSVG (implicit neural). The 
     SVGDreamer and SVGFusion outputs are reproduced 

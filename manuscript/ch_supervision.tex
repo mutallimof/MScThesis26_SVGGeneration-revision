@@ -28,6 +28,9 @@ When datasets contain clean SVG examples, models trained this way can absorb typ
 counts from the data. DeepSVG, DeepIcon, and Im2Vec all use reconstruction 
 objectives~\cite{carlierDeepSVGHierarchicalGenerative2020, bingDeepIconHierarchicalNetwork2024, reddyIm2VecSynthesizingVector2021}, 
 each with a different combination of losses (Table~\ref{tab:supervision_overview}). 
+DeepSVG and DeepIcon compare their predictions against ground-truth SVG commands. 
+Im2Vec has no SVG targets at all: it is trained on raster images, and its reconstruction loss 
+compares the rendered output with the input image through differentiable rendering. 
 Once trained, generation is a single forward pass with no further optimization (Chapter~\ref{ch:Landscape}).
 
 The structural quality of the output comes from the dataset, not from the loss. 
@@ -41,15 +44,14 @@ Reconstruction supervision also requires a reference image, so it cannot support
 \section{Semantic Guidance with Vision--Language Models}
 \label{sec:clip_guidance}
 
-CLIP-based guidance (Section~\ref{sec:clip}) can score how well a rendered SVG matches a text prompt, when no refrence image exists. 
+CLIP-based guidance (Section~\ref{sec:clip}) can score how well a rendered SVG matches a text prompt, when no reference image exists. 
 This makes open-ended generation possible without paired SVG datasets.
 CLIP measures alignment in embedding space, not structural correctness. 
 Optimization can introduce extra primitives to push the embedding score higher, 
 and there is nothing in the signal that penalizes fragmented output. 
-In practice, CLIP guidance is rarely used alone. It typically serves as an early-stage 
-alignment signal before diffusion-based supervision stage, 
-as in VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022} 
-and early SVGDreamer configurations.
+In practice, CLIP guidance is rarely used alone. In VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022}, 
+CLIP only ranks raster samples from the diffusion model before they are traced, 
+and the optimization itself runs on SDS.
 
 
 \section{Diffusion-Based Supervision}
@@ -106,20 +108,22 @@ diffusion evaluation cycles, unlike dataset-trained models that produce output i
 
 When supervision is applied changes what kind of output you get.
 Dataset-supervised models learn from collections of SVG graphics during training. 
-DeepSVG~\cite{carlierDeepSVGHierarchicalGenerative2020}, DeepIcon~\cite{bingDeepIconHierarchicalNetwork2024}, 
-and Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} are trained on reconstruction objectives against SVG data, 
-and once trained, generation requires no further optimization. LayerTracer~\cite{songLayerTracerCognitiveAlignedLayered2025} 
-takes this further: it trains on a synthetically generated serpentine dataset where vector graphics are 
-constructed in a deliberate layer order that mimics how designers actually build graphics (Figure~\ref{fig:serpentine}). 
+DeepSVG~\cite{carlierDeepSVGHierarchicalGenerative2020} and DeepIcon~\cite{bingDeepIconHierarchicalNetwork2024} 
+are trained on reconstruction objectives against SVG data. Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} 
+is trained on raster images instead, with reconstruction through differentiable rendering. 
+Once trained, generation requires no further optimization for any of the three. LayerTracer~\cite{songLayerTracerCognitiveAlignedLayered2025} 
+takes this further: it trains on construction sequences derived from about 20,000 layered SVGs made by designers, 
+where each graphic is rebuilt in a deliberate layer order that mimics how designers actually build graphics (Figure~\ref{fig:serpentine}). 
 The dataset structure itself is the supervision prior. The model learns to produce layered outputs not because a loss function rewards 
 layering, but because every training example was built that way.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.85\textwidth]{latertracer trng.png}
-    \caption{Step-by-step construction sequence from the Serpentine 
-    dataset used to train 
-    LayerTracer~\cite{songLayerTracerCognitiveAlignedLayered2025}. 
+    \caption{Step-by-step construction sequence from the training 
+    data of LayerTracer~\cite{songLayerTracerCognitiveAlignedLayered2025}. 
+    The frames are arranged in a serpentine grid layout, so 
+    consecutive steps sit next to each other. 
     Each stage adds a new layer, mimicking how a designer would 
     build the graphic incrementally. The dataset structure itself 
     encodes the supervision prior.}
@@ -129,12 +133,14 @@ layering, but because every training example was built that way.
 Per-instance supervision works on a completely different timescale. 
 LIVE~\cite{maLayerwiseImageVectorization2022}, SAMVG~\cite{zhuSAMVGMultistageImage2023}, 
 VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022}, SVGDreamer~\cite{xingSVGDreamerTextGuided2024}, 
-NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025}, NiVeL~\cite{thamizharasanNIVeLNeuralImplicit2024}, 
-and T2V-NPR~\cite{zhangTexttoVectorGenerationNeural2024} all optimize vector parameters from scratch for each input. 
+NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025}, and NiVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} all optimize vector parameters from scratch for each input. 
 No model is trained. Structure changes dynamically in response to each prompt or image, 
 which is flexible but computationally expensive.
-SVGFusion~\cite{xingSVGFusionScalableTexttoSVG2025} and T2V-NPR~\cite{zhangTexttoVectorGenerationNeural2024} 
-combine both, they learn latent representations from datasets during training, then apply optimization-based at inference. 
+T2V-NPR~\cite{zhangTexttoVectorGenerationNeural2024} combines both: it learns a path latent space 
+from a dataset during training and then optimizes path latents for each prompt at inference. 
+SVGFusion~\cite{xingSVGFusionScalableTexttoSVG2025} also learns its latent space from data, 
+but it does not optimize at inference. It samples new SVGs with its latent diffusion transformer, 
+which takes 24 to 36 seconds per SVG. 
 
 
 
@@ -147,8 +153,8 @@ analyzed in this thesis.}
 \hline
 \textbf{Model} & \textbf{Supervision Signal} & \textbf{Applied} \\
 \hline
-LIVE & L1 + perceptual (VGG) + Xing loss & Inference \\
-SAMVG & L1 + IoU + SAM segmentation init & Inference \\
+LIVE & UDF pixel loss + Xing loss & Inference \\
+SAMVG & MSE + LPIPS + SAM segmentation init & Inference \\
 Im2Vec & L2 via differentiable rendering & Training \\
 VectorFusion & SDS from Stable Diffusion & Inference \\
 SVGDreamer & VPSD from Stable Diffusion & Inference \\
@@ -159,7 +165,7 @@ DeepSVG & Cross-entropy + L1 + KL divergence & Training \\
 DeepIcon & Cross-entropy + CLIP embedding & Training \\
 SVGFusion & KL + latent-space denoising (VS-DiT) & Training \\
 T2V-NPR & VSD + neural path VAE & Both \\
-LayerTracer & Denoising + serpentine construction data & Training \\
+LayerTracer & Denoising on layered construction sequences & Training \\
 \hline
 \end{tabular}
 \end{table}
@@ -188,13 +194,13 @@ path fragmentation that makes the file harder to edit.
     \centering
     \begin{tabular}{cc}
     \textbf{LIVE} & \textbf{SAMVG} \\
-    \textbf{Random init} & \textbf{SAM segmentation init} \\[4pt]
+    \textbf{Error-driven init} & \textbf{SAM segmentation init} \\[4pt]
     \includegraphics[width=0.4\textwidth]{live_img.png} &
     \includegraphics[width=0.4\textwidth]{sam_img.png} \\
     \end{tabular}
     \caption{Both models use pixel reconstruction loss via 
-    differentiable rasterization. LIVE initializes randomly and 
-    produces a visually closer match to the target through dense 
+    differentiable rasterization. LIVE adds each new path where 
+    the reconstruction error is largest and produces a visually closer match to the target through dense 
     overlapping paths, but the resulting file is fragmented and 
     difficult to edit. SAMVG initializes from segmentation masks 
     and produces cleaner object boundaries with fewer paths, at 
@@ -203,8 +209,9 @@ path fragmentation that makes the file harder to edit.
     \label{fig:init_comparison}
 \end{figure}
 
-SVGFusion and T2V-NPR both start optimization from latent embeddings shaped by prior training, 
-so the optimizer never begins from random noise. LayerTracer takes the idea further, 
+T2V-NPR starts optimization inside a latent space shaped by prior training, 
+so even a random starting latent decodes to a regular path. SVGFusion does not optimize at all, 
+its structure comes from the training data through sampling. LayerTracer takes the idea further, 
 its training data encodes construction order (Figure~\ref{fig:serpentine}), 
 so the model learns to produce layered outputs without any explicit structural loss. 
 The dataset itself is the structural prior.

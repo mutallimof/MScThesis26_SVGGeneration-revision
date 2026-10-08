@@ -107,7 +107,8 @@ from where optimization starts, which suggests that initialization matters as mu
 
 Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} does not fit cleanly into either group. 
 It trains an encoder-decoder to predict vector primitives from a raster image in a single forward pass, 
-using differentiable rendering and reconstruction loss during training. At inference there is no iterative refinement. 
+using differentiable rendering and reconstruction loss during training. The training data are raster images only, 
+the model never sees an SVG~\cite{reddyIm2VecSynthesizingVector2021}. At inference there is no iterative refinement. 
 It is included here because its core contribution is the training objective, not a learned generative model over SVG structure.
 
 \subsection*{Semantic-Supervised}
@@ -180,14 +181,6 @@ both tend to be cleaner and more organized than purely
 parametric optimization, but inference is slower because the 
 network has to be optimized from scratch for every new prompt.
 
-Table~\ref{tab:arch_optbased} summarizes the architectural 
-components of all optimization-based methods. The 
-``Trainables'' column refers to per-instance parameters 
-optimized at inference time, not learned model weights. None 
-of these methods require a training dataset.
-
-
-
 \begin{table}[h!]
 \centering
 \caption{Architectural overview of optimization-based 
@@ -200,15 +193,15 @@ per-instance parameters optimized at inference time.}
 \textbf{Model} & \textbf{Trainables} & \textbf{Init.} 
 & \textbf{Supervision} & \textbf{Representation} \\
 \midrule
-LIVE         & SVG parameters      & Raster-driven    
+LIVE         & SVG parameters      & Error-driven     
              & Pixel recon.        & Parametric       \\
-SAMVG        & None                & Mask-based       
-             & None                & Parametric       \\
+SAMVG        & SVG parameters      & Mask-based       
+             & Pixel recon.        & Parametric       \\
 Im2Vec       & Encoder + RNN       & Image encoding   
              & Pixel recon.        & Parametric paths \\
 VectorFusion & SVG parameters      & Random/Trace     
              & SDS                 & Parametric       \\
-SVGDreamer   & SVG param. + LoRA   & Random paths     
+SVGDreamer   & SVG param. + LoRA   & Attention (SIVE) 
              & VPSD                & Parametric       \\
 SVGDreamer++ & SVG param. + LoRA   & Random + HIVE    
              & VPSD + HIVE         & Structured param.\\
@@ -222,13 +215,15 @@ NiVeL        & MLP weights         & Random weights
 
 Table~\ref{tab:arch_optbased} summarizes the 
 architectural components of the optimization-based 
-methods. For all models in this group, the 
+methods. For all models in this group except Im2Vec, the 
 ``Trainables'' column refers to per-instance 
 parameters optimized at inference time rather than 
-learned model weights. None of these methods require 
-a training dataset; supervision is provided either 
-by the input image directly or by a frozen pretrained 
-model.
+learned model weights. Apart from Im2Vec, none of these 
+methods requires a training dataset; supervision is 
+provided either by the input image directly or by a 
+frozen pretrained model. Im2Vec is the exception: its 
+trainables are network weights, learned once from a 
+dataset of raster images.
 
 
 
@@ -259,8 +254,8 @@ also exposed the difficulty of maintaining geometric
 validity across long command sequences.
 
 DeepIcon~\cite{bingDeepIconHierarchicalNetwork2024} applies a similar framework
-to icon generation specifically, trained on a curated
-dataset of simple icons. The domain-specific training
+to icon vectorization specifically, trained on the same
+SVG-Icons8 dataset of simple icons. The domain-specific training
 produces outputs with more consistent style and geometry
 than general-purpose models, though generalization beyond
 the training distribution is limited by design.
@@ -277,14 +272,16 @@ meaningful layer organization than direct command
 prediction, with direct consequences for editability.
 
 T2V-NPR~\cite{zhangTexttoVectorGenerationNeural2024} combines dataset training
-with a learned neural path representation. Trained on
-natural image and stylization data, it generates vector
-paths through a latent path space. It uses diffusion-based semantic
-supervision during training, but at inference it operates
-as a forward generative model. Its placement here reflects
-the fact that its structural behavior is closer to
-the learned models in this section than to the per-instance
-optimization methods above.
+with per-prompt optimization. It first trains a neural path VAE
+on the FIGR-8-SVG icon dataset, so the latent space learns
+what a regular, smooth path looks like. For a new prompt there is
+no forward pass. Path latents in this learned space are optimized
+with VSD from a pretrained diffusion model, and the result is then
+refined with layer-wise vectorization~\cite{zhangTexttoVectorGenerationNeural2024}.
+So T2V-NPR is a hybrid: a trained path prior with per-instance
+optimization on top. It is described in this section because its
+path prior comes from a dataset, but its inference works like
+the optimization methods above.
 
 SVGFusion~\cite{xingSVGFusionScalableTexttoSVG2025} is the most architecturally
 complex model in this family. It first learns a continuous
@@ -317,22 +314,22 @@ the dataset used for offline model training.}
 \textbf{Model} & \textbf{Trainables} & \textbf{Data} 
 & \textbf{Supervision} & \textbf{Representation} \\
 \midrule
-DeepSVG      & VAE + Transformer   & SVGIcons8        
+DeepSVG      & VAE + Transformer   & SVG-Icons8       
              & Recon. + KL         & Sequential tokens \\
-DeepIcon     & Transformer         & SVGIcons8        
+DeepIcon     & Transformer         & SVG-Icons8       
              & Reconstruction      & Sequential tokens \\
 SVGFusion    & VP-VAE + VS-DiT     & SVGX             
              & Recon. + Denoising  & Continuous latent \\
-T2V-NPR      & NPR-VAE + LoRA      & FIGR-8           
+T2V-NPR      & NPR-VAE + LoRA      & FIGR-8-SVG       
              & VSD                 & Neural path repr. \\
-LayerTracer  & DiT + LoRA          & LayerSVG         
+LayerTracer  & DiT + LoRA          & 20k layered SVGs 
              & Denoising           & Layered sequences \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 Unlike the optimization-based group, every model here has a 
-named training corpus. The representation column also shifts 
+training corpus. The representation column also shifts 
 away from parametric paths toward sequential tokens, latent 
 spaces, and layered sequences, reflecting a fundamentally 
 different approach to how SVG structure is encoded.
@@ -346,11 +343,13 @@ at inference time (\textit{Iterative Opt.}) and methods that
 generate SVGs through a single trained forward pass 
 (\textit{Forward Dec.}). The \textit{Supervision} column 
 indicates the primary signal driving generation: 
-\textit{Opt.-based} refers to direct pixel reconstruction 
-without a pretrained model, \textit{Self-Sup.} to semantic 
+\textit{Pixel recon.} refers to reconstruction against a 
+target raster image without a pretrained model, \textit{Self-Sup.} to semantic 
 signals derived from frozen pretrained models (diffusion or 
 CLIP), and \textit{Supervised} to training against 
-ground-truth SVG data. Task types distinguish between 
+ground-truth SVG data. \textit{Hybrid} in the Inference 
+column marks methods that combine a trained model with a 
+per-instance optimization or vectorization step. Task types distinguish between 
 \textit{Vectorization} (raster image as input, SVG as 
 output), \textit{Text-to-SVG} (text prompt as input), and 
 \textit{Unconditional Generation} (no input at inference --- SVG 
@@ -367,9 +366,9 @@ thesis, organized by generation strategy.}
 \textbf{Model} & \textbf{Task} & \textbf{Inference} & 
 \textbf{Input} & \textbf{Output} & \textbf{Supervision} \\
 \midrule
-LIVE         & Vectorization      & Iterative Opt. & Image    & Paths        & Optimization \\
-SAMVG        & Vectorization      & Iterative Opt. & Image    & Paths        & Optimization \\
-Im2Vec       & Vectorization      & Forward Dec.   & Image    & Paths        & Self-Sup.  \\
+LIVE         & Vectorization      & Iterative Opt. & Image    & Paths        & Pixel recon. \\
+SAMVG        & Vectorization      & Iterative Opt. & Image    & Paths        & Pixel recon. \\
+Im2Vec       & Vectorization      & Forward Dec.   & Image    & Paths        & Pixel recon. \\
 \midrule
 VectorFusion & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
 SVGDreamer   & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
@@ -380,19 +379,21 @@ NeuralSVG    & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & S
 DeepSVG      & Unconditional      & Forward Dec.   & None     & Paths        & Supervised \\
 DeepIcon     & Vectorization      & Forward Dec.   & Image    & Layers/Paths & Supervised \\
 SVGFusion    & Text-to-SVG        & Forward Dec.   & Text     & Layers/Paths & Supervised \\
-T2V-NPR      & Text-to-SVG        & Forward Dec.   & Text     & Layers/Paths & Supervised \\
+T2V-NPR      & Text-to-SVG        & Hybrid         & Text     & Layers/Paths & Sup. + Self-Sup. \\
 LayerTracer  & Text-to-SVG        & Hybrid         & Text/Img & Layers/Paths & Supervised \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 The split between Iterative Opt. and Forward Dec. in the 
-Inference column maps cleanly onto the two families: every 
-optimization-based model refines at inference time, while 
-every dataset-driven model generates through a single 
-forward pass. LayerTracer is the only exception, labeled 
-Hybrid because it combines a trained diffusion model with 
-a per-instance vectorization step.
+Inference column maps almost cleanly onto the two families: 
+every optimization-based model except Im2Vec refines at 
+inference time, while every dataset-driven model except 
+T2V-NPR generates through a forward pass. Im2Vec is trained 
+and then decodes in a single pass. T2V-NPR trains a path 
+prior and then optimizes for each prompt. LayerTracer is 
+labeled Hybrid because it combines a trained diffusion model 
+with a per-instance vectorization step.
 
 
 The thirteen models described here differ in representation 

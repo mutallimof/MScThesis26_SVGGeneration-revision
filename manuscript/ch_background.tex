@@ -381,10 +381,12 @@ from vector parameters via differentiable rendering, the
 CLIP similarity score can serve as an optimization signal. 
 CLIP does not generate images in this setup: it acts as 
 a semantic evaluator that provides a direction for 
-improvement. In several of the models analyzed in 
-Chapter~\ref{ch:supervision}, CLIP-based guidance serves 
-as an early-stage alignment signal before stronger 
-supervision (typically from a diffusion model) takes over.
+improvement. In the models analyzed in 
+Chapter~\ref{ch:supervision}, CLIP plays a smaller role. 
+VectorFusion, for example, uses CLIP only to pick the best 
+of several raster samples before vectorization, and the 
+optimization itself is driven by a diffusion 
+model~\cite{jainVectorFusionTexttoSVGAbstracting2022}.
 
 \subsection{Diffusion Models}
 
