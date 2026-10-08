@@ -5,7 +5,7 @@ This thesis examined how SVG generation methods construct
 vector graphics and why their structural outcomes differ. 
 The analysis was organized around three dimensions 
 (representation, supervision, and evaluation) and applied 
-across thirteen open-source models. The goal was to provide 
+across thirteen models. The goal was to provide 
 a clear reference for anyone working on SVG generation: 
 what current models do, how their design choices shape 
 the output, and where the field still falls short.
@@ -27,10 +27,11 @@ as part of the foundational definition of SVG, and
 Chapter~\ref{ch:synthesis} identified five conditions 
 under which current models can satisfy them.
 
-\textbf{RQ2: What open-source methods currently exist 
+\textbf{RQ2: What methods currently exist 
 for generating SVGs from different input modalities?}
 
-The review identified two broad methodological families. 
+The thirteen analyzed methods fall into two broad 
+methodological families. 
 Optimization-based methods (LIVE, SAMVG, Im2Vec, 
 VectorFusion, SVGDreamer, SVGDreamer++, NiVeL, and 
 NeuralSVG) operate by iteratively refining vector 
@@ -138,11 +139,11 @@ methods share and diverge in their generation loops
 
 \section*{Limitations}
 
-The analysis is bounded by the set of publicly 
-available, open-source models with documented 
-implementations. Several models with reported strong 
-results, including VectorFusion and DeepIcon, did not 
-have accessible code at the time of writing, the depth of implementation-level analysis 
+The analysis is bounded by the thirteen selected 
+models and by what their papers report. Several models 
+with reported strong results, including VectorFusion 
+and DeepIcon, did not have accessible code at the time 
+of writing, so the depth of implementation-level analysis 
 is limited for those methods. Quantitative comparison across models was not 
 feasible because reported metrics are heterogeneous,
 different models evaluate on different datasets, use 
@@ -213,8 +214,8 @@ wants to build an SVG generator without depending on
 token limits or API restrictions of LLM-based services, 
 the optimization-based and dataset-driven methods 
 analyzed here are the reliable path. They have their own 
-costs, mostly in hardware, but the models 
-and the code are open. I think those approaches will 
+costs, mostly in hardware, but most of the models 
+and their code are open. I think those approaches will 
 prove more durable in the long run than closed 
 pipelines, and working with them directly will push the 
 field forward in ways that relying on proprietary 

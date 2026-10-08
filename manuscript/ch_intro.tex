@@ -118,13 +118,18 @@ growing direction but excluded from the main analysis.
 A full justification is 
 provided in Appendix~\ref{app:llm_exclusion}.
 
-To support systematic comparison, the analysis is 
-restricted to open-source models with available 
-implementations and published architectural 
-descriptions. This enables a study of methods that 
-differ meaningfully in representation strategy, 
-supervision signal, and optimization approach, while 
-remaining grounded in verifiable technical detail.
+The thirteen models in the main analysis were selected 
+by a few practical criteria, and the selection is not 
+exhaustive. Each one is a recent learning-based method 
+(2020 to 2025) that produces SVG or structured vector 
+output. Each paper also describes its architecture in 
+enough detail to analyze how the model represents 
+geometry and how it is supervised. The models were 
+chosen so that together they cover the different 
+representation and supervision types. Whether code is 
+publicly available was recorded 
+(Table~\ref{tab:reproducibility}), but it was not a 
+requirement.
 
 
 \section{Research Goals}
@@ -134,9 +139,9 @@ remaining grounded in verifiable technical detail.
     structures, and components of SVG graphics as a 
     foundation for understanding their representation 
     and generation.
-    \item To collect, review, and categorize existing 
-    open-source methods for SVG generation across 
-    different input modalities.
+    \item To collect, review, and categorize a 
+    representative set of existing methods for SVG 
+    generation across different input modalities.
     \item To investigate the deep learning architectures 
     employed in SVG generation models and analyze their 
     design principles.
@@ -157,7 +162,7 @@ remaining grounded in verifiable technical detail.
 \begin{enumerate}
     \item What are the main properties and structures 
     that define an editable and high-quality SVG?
-    \item What open-source methods currently exist for 
+    \item What methods currently exist for 
     generating SVGs from different input modalities?
     \item What types of deep learning architectures are 
     used in SVG generation models?
@@ -183,8 +188,7 @@ observed across current methods.
 
 \section{Thesis Structure}
 
-Chapter~\ref{ch:slr} describes the systematic literature 
-review that guided model selection. Chapter~\ref{ch:Background} 
+Chapter~\ref{ch:Background} 
 introduces the foundational concepts required to understand 
 vector graphics generation: SVG structure, representation 
 types, differentiable rendering, and the supervision 
