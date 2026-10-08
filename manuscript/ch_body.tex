@@ -143,7 +143,7 @@ pixel difference, it uses the Segment Anything Model~\cite{kirillovSegmentAnythi
 regions before any optimization begins. The loss function is the same. The difference in output quality comes almost entirely 
 from where optimization starts, which suggests that initialization matters as much as what you optimize for.
 
-Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} does not fit cleanly into either group. 
+Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} does not fit cleanly into either group and is listed as a hybrid in Figure~\ref{fig:taxonomy}. 
 It trains an encoder-decoder to predict vector primitives from a raster image in a single forward pass, 
 using differentiable rendering and reconstruction loss during training. The training data are raster images only, 
 the model never sees an SVG~\cite{reddyIm2VecSynthesizingVector2021}. At inference there is no iterative refinement. 
