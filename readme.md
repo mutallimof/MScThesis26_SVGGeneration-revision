@@ -33,7 +33,7 @@ This thesis argues that the structural quality of generated SVGs is primarily sh
 
 ## Models Analyzed
 
-Optimization-based: LIVE, SAMVG, VectorFusion, SVGDreamer/++, NiVeL, NeuralSVG
+Optimization-based: LIVE, SAMVG, VectorFusion, SVGDreamer/++, NIVeL, NeuralSVG
 
 Learning-based: DeepSVG, DeepIcon, SVGFusion, LayerTracer
 

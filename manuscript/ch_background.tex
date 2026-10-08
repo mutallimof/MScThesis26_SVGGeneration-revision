@@ -227,7 +227,7 @@ is simply shape number 4. The MLP takes the index 4 as input and
 outputs the control points and the color of that 
 shape~\cite{polaczekNeuralSVGImplicitRepresentation2025}. To change 
 the mouth, you change the network weights, and the numbers only appear 
-when the network is queried. NiVeL works the other way around: its network 
+when the network is queried. NIVeL works the other way around: its network 
 takes a pixel coordinate and returns which layer covers it, so the 
 curve only appears after it is traced from the 
 field~\cite{thamizharasanNIVeLNeuralImplicit2024}.
@@ -297,7 +297,7 @@ losses that compare predicted and ground-truth commands, so no
 rasterizer is involved~\cite{carlierDeepSVGHierarchicalGenerative2020, bingDeepIconHierarchicalNetwork2024}. 
 LayerTracer generates raster construction frames with a diffusion 
 model and vectorizes them afterwards with a separate tracing 
-step~\cite{songLayerTracerCognitiveAlignedLayered2025}. NiVeL 
+step~\cite{songLayerTracerCognitiveAlignedLayered2025}. NIVeL 
 optimizes implicit fields on a pixel grid and extracts curves only 
 at the end~\cite{thamizharasanNIVeLNeuralImplicit2024}. DiffVG is 
 also not the only differentiable rasterizer. B\'{e}zier Splatting, 

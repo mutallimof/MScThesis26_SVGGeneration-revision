@@ -42,7 +42,7 @@ for tree={
   [Optimization-based\\(per instance)
     [Reconstruction-supervised:\\LIVE{,} SAMVG]
     [Semantic-supervised{,} parametric:\\VectorFusion{,} SVGDreamer{,} SVGDreamer++]
-    [Semantic-supervised{,} neural implicit:\\NiVeL{,} NeuralSVG]
+    [Semantic-supervised{,} neural implicit:\\NIVeL{,} NeuralSVG]
   ]
   [Learning-based\\(trained{,} forward generation)
     [Sequential tokens: DeepSVG{,} DeepIcon]
@@ -55,8 +55,7 @@ for tree={
   ]
 ]
 \end{forest}
-\caption{Taxonomy of the thirteen analyzed models by generation 
-strategy, with representation and supervision as the second level.}
+\caption{Taxonomy of the thirteen analyzed models by generation strategy.}
 \label{fig:taxonomy}
 \end{figure}
 
@@ -123,7 +122,7 @@ supervision signal is and how geometry is represented
 during optimization.
 
 Almost all of them rely on DiffVG~\cite{liDifferentiableVectorGraphics2020a} to work. 
-NiVeL is the exception: it optimizes implicit fields that are evaluated on a pixel grid 
+NIVeL is the exception: it optimizes implicit fields that are evaluated on a pixel grid 
 and only turned into curves afterwards with marching squares, so DiffVG is not part of 
 its optimization loop~\cite{thamizharasanNIVeLNeuralImplicit2024}.
 The optimization loop across all methods 
@@ -210,7 +209,7 @@ faster convergence~\cite{xingSVGDreamerTextGuided2024}.
 
 \subsection{Neural Implicit Representation}
 
-NiVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} and 
+NIVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} and 
 NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025} take 
 a different approach to the same optimization loop. 
 They store geometry as the weights of a small MLP, instead of 
@@ -222,7 +221,7 @@ This brings different properties to optimization based approaches. Compared to
 parametric methods, where each path is an independent object and 
 optimization can push them in different directions. But with an 
 MLP, all shapes come from the same learned function, which 
-creates a bias toward global coherence. NiVeL uses this to 
+creates a bias toward global coherence. NIVeL uses this to 
 decompose scenes into layered components, where each layer is 
 a separate neural field whose zero-level set defines a shape 
 boundary. NeuralSVG assigns each shape a fixed index and 
@@ -262,7 +261,7 @@ SVGDreamer++ & SVG param. + LoRA   & Random + HIVE
              & VPSD + HIVE         & Structured param.\\
 NeuralSVG    & MLP weights + LoRA  & Saliency-based   
              & SDS                 & Neural implicit  \\
-NiVeL        & MLP weights         & Random weights   
+NIVeL        & MLP weights         & Random weights   
              & SDS                 & Neural implicit  \\
 \bottomrule
 \end{tabularx}
@@ -426,7 +425,7 @@ Im2Vec       & Vectorization      & Forward Dec.   & Image    & Paths        & P
 VectorFusion & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
 SVGDreamer   & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
 SVGDreamer++ & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
-NiVeL        & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Self-Sup.  \\
+NIVeL        & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Self-Sup.  \\
 NeuralSVG    & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Self-Sup.  \\
 \midrule
 DeepSVG      & Unconditional      & Forward Dec.   & None     & Paths        & Supervised \\

@@ -31,7 +31,7 @@ VectorFusion & SDS from Stable Diffusion & Inference \\
 SVGDreamer & VPSD from Stable Diffusion & Inference \\
 SVGDreamer++ & VPSD + HIVE masks + reward model & Inference \\
 NeuralSVG & SDS + fine-tuned LoRA adapter & Inference \\
-NiVeL & SDS from Stable Diffusion & Inference \\
+NIVeL & SDS from DeepFloyd & Inference \\
 DeepSVG & Cross-entropy + L1 + KL divergence & Training \\
 DeepIcon & Cross-entropy + CLIP embedding & Training \\
 SVGFusion & KL + latent-space denoising (VS-DiT) & Training \\
@@ -94,7 +94,8 @@ that standard SDS tends to produce, and SVGDreamer~\cite{xingSVGDreamerTextGuide
 Both are described in Section~\ref{sec:sds_vsd}. 
 What matters for this chapter is what each variant does to the geometry.
 
-VectorFusion and NiVeL use standard SDS~\cite{jainVectorFusionTexttoSVGAbstracting2022, thamizharasanNIVeLNeuralImplicit2024}. 
+VectorFusion and NIVeL use standard SDS~\cite{jainVectorFusionTexttoSVGAbstracting2022, thamizharasanNIVeLNeuralImplicit2024}. 
+VectorFusion takes it from Stable Diffusion. NIVeL takes it from DeepFloyd, which denoises in pixel space, so no image encoder sits in the loop~\cite{thamizharasanNIVeLNeuralImplicit2024}. 
 NeuralSVG adds a fine-tuned LoRA adapter on top of SDS~\cite{polaczekNeuralSVGImplicitRepresentation2025}. 
 SVGDreamer replaces SDS entirely with VPSD~\cite{xingSVGDreamerTextGuided2024}. 
 Figure~\ref{fig:supervision_comparison} shows the outputs side by side from the same prompt. 
@@ -160,7 +161,7 @@ layering, but because every training example was built that way.
 Per-instance supervision works on a completely different timescale. 
 LIVE~\cite{maLayerwiseImageVectorization2022}, SAMVG~\cite{zhuSAMVGMultistageImage2023}, 
 VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022}, SVGDreamer~\cite{xingSVGDreamerTextGuided2024}, 
-NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025}, and NiVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} all optimize vector parameters from scratch for each input. 
+NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025}, and NIVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} all optimize vector parameters from scratch for each input. 
 No model is trained. Structure changes dynamically in response to each prompt or image, 
 which is flexible but computationally expensive.
 T2V-NPR~\cite{zhangTexttoVectorGenerationNeural2024} combines both: it learns a path latent space 

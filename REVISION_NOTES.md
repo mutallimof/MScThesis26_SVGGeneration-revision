@@ -26,7 +26,7 @@ confirm this way. Anything unconfirmed is listed below.
 | VectorFusion | Optimization, semantic, parametric | Text-to-SVG | none | iterative opt. | SDS (Stable Diffusion); CLIP only reranks raster samples before LIVE tracing | 64 paths × 4 segments; random init or LIVE trace | yes | CVPR 2023 |
 | SVGDreamer | Optimization, semantic, parametric | Text-to-SVG | none | iterative opt. | VPSD (builds on VSD, LoRA score estimator, reward model reweights particles) | SIVE attention-based init | yes | CVPR 2024 |
 | SVGDreamer++ | Optimization, semantic, parametric | Text-to-SVG | none | iterative opt. | VPSD + HIVE | structured parametric | not explicitly confirmed | TPAMI 2025 |
-| NiVeL | Optimization, semantic, neural implicit | Text-to-SVG | none | iterative opt. | SDS | implicit fields on a grid, curves via marching squares | **no** (not in the optimization loop) | CVPR 2024 |
+| NIVeL | Optimization, semantic, neural implicit | Text-to-SVG | none | iterative opt. | SDS (DeepFloyd, pixel-space diffusion) | implicit fields on a grid, curves via marching squares | **no** (not in the optimization loop) | CVPR 2024 |
 | NeuralSVG | Optimization, semantic, neural implicit | Text-to-SVG | none | iterative opt. | SDS + LoRA | MLP: shape index → control points + colour; dropout-based ordering of shapes | yes (README) | ICCV 2025 |
 | DeepSVG | Learning-based, sequential | Unconditional | SVG-Icons8 | forward | cross-entropy on commands/arguments + KL | canonicalized: start at topmost-leftmost point, clockwise; paths sorted lexicographically by start (ordered variant) | no | NeurIPS 2020 |
 | DeepIcon | Learning-based, sequential | Vectorization / image | SVG-Icons8 | forward | reconstruction against SVG commands; CLIP image encoder | sequential tokens | no ("bypassing the need for a differentiable rasterizer") | DICTA 2024 |
@@ -83,7 +83,7 @@ are open". The Chapter 2 sentence is removed from §1.6. Kitchenham (×2), PRISM
 
 **D — Technical fixes.** The SDS and VSD explanations in §2.4.4 and §5.3 are rewritten, and the ProlificDreamer
 reference is added. The hard-coded "[1]" in the introduction is now `\cite{w3techsSVG2024}`. "All of them rely on DiffVG"
-becomes "Almost all … NiVeL is the exception". The §3.1 SDS one-liner is corrected too.
+becomes "Almost all … NIVeL is the exception". The §3.1 SDS one-liner is corrected too.
 
 **E — Table 6.3 and Chapter 6.**
 - Asterisks are kept only where Table 6.1 shows a reported metric. The one exception is the T2V-NPR geometric quality
@@ -92,7 +92,7 @@ becomes "Almost all … NiVeL is the exception". The §3.1 SDS one-liner is corr
   hardware in Table 6.2 and with "Enterprise GPU required" in the appendix. As a result, no model is rated + in all six
   dimensions, so the sentence "No model scores well across all six dimensions" stays true.
 - The layer-organization sentence now matches the table.
-- The code paragraph now says code was recorded but not a selection criterion: four models have no code and NiVeL is
+- The code paragraph now says code was recorded but not a selection criterion: four models have no code and NIVeL is
   pending, so five cannot be run from official code. "whom wants" is fixed.
 - RQ6 now says LayerTracer (dataset side) and NeuralSVG (optimization side) come closest, both short only on efficiency.
   SVGFusion is similar but unverifiable. **This changes the wording of a finding; please confirm.**
@@ -101,9 +101,9 @@ becomes "Almost all … NiVeL is the exception". The §3.1 SDS one-liner is corr
 - Taxonomy tree (`forest`, Fig. 3.1), referenced in the Chapter 3 intro.
 - Reconstruction vs. semantic split at the start of §2.4.
 - Primitive usage paragraph in §4.1, DeepSVG ordering in §4.2, and a worked mouth-curve example in §2.2.3
-  (parametric → tokens → NeuralSVG MLP index → control points/colour; NiVeL coordinate → layer).
+  (parametric → tokens → NeuralSVG MLP index → control points/colour; NIVeL coordinate → layer).
 - "Generative layer" wording in §2.2.4 and §4.4.
-- DiffVG paragraph in §2.3 (DeepSVG/DeepIcon/LayerTracer/NiVeL do not use it; Bézier Splatting as an alternative).
+- DiffVG paragraph in §2.3 (DeepSVG/DeepIcon/LayerTracer/NIVeL do not use it; Bézier Splatting as an alternative).
 - SDS vs. VPSD comparison after Figs. 3.2/3.3.
 - Column note in the Table 3.1 caption, plus a note on the hybrids in the Table 6.2 caption.
 
@@ -111,7 +111,7 @@ becomes "Almost all … NiVeL is the exception". The §3.1 SDS one-liner is corr
 - All 47 entries now have venues (conference/journal, year, pages where verified). arXiv-only papers are `@misc` with
   `eprint`: SVGFusion and SVGEditBench V2.
 - Fixed: Eisenberg (2002), Kingma & Welling (ICLR 2014), SVGDreamer (CVPR 2024), VectorFusion (CVPR 2023), LIVE
-  (CVPR 2022), Im2Vec (CVPR 2021), NiVeL (CVPR 2024), NeuralSVG (ICCV 2025), LayerTracer (ICCV 2025), DeepIcon
+  (CVPR 2022), Im2Vec (CVPR 2021), NIVeL (CVPR 2024), NeuralSVG (ICCV 2025), LayerTracer (ICCV 2025), DeepIcon
   (DICTA 2024), SAMVG (ICASSP 2024), T2V-NPR (TOG 2024), StarVector/LLM4SVG (CVPR 2025), OmniSVG (NeurIPS 2025),
   InternSVG (ICLR 2026), DreamFusion (ICLR 2023), Ha & Eck (ICLR 2018), and the others.
 - The LLM review now has its authors (Malashenko, Jarsky, Efimova; Zap. Nauchn. Sem. POMI 546, 59–80, 2025).
@@ -155,13 +155,14 @@ designer" capitalization, and "dependent to".
    - LIVE 2,600–10,000 s, SAMVG upper bound 2,000 s (139 s is verified)
    - VectorFusion 10–20 min
    - SVGDreamer ≥31 GB and 7–14 min
-   - NiVeL ∼5 min/A100
+   - NIVeL ∼5 min/A100
 5. **T2V-NPR ∼13 min and RTX 3090** (Table 6.2): not found.
 6. **T2V-NPR trainables "NPR-VAE + LoRA".** A LoRA is part of VSD, but the paper's use of it is not confirmed.
 7. **Im2Vec "L2 via differentiable rendering"** (Table 5.1): the exact loss form is not confirmed.
 8. **DeepIcon "Cross-entropy + CLIP embedding"** (Table 5.1). One secondary source says DeepIcon uses MSE on the
    arguments.
-9. **NiVeL priors "DeepFloyd + CLIP"** (Appendix Table B.2): not confirmed.
+9. **NIVeL priors** (Appendix Table B.2): resolved in the final fixes. DeepFloyd is verified. CLIP is not confirmed,
+   so it was removed.
 10. **SVGDreamer++ uses DiffVG**: likely (same codebase), but not explicitly confirmed. The text says "almost all".
 11. **LayerTracer dataset name.** I did not find "LayerSVG" or a dataset called "Serpentine". The paper describes about
     20k designer-made layered SVGs arranged in a serpentine grid. I used a descriptive name.
@@ -203,7 +204,7 @@ Must-fix items applied:
    - Im2Vec trainables paragraph after Table 3.1: tightened
 
 Optional items applied:
-- "A concrete example…" opener removed; "NiVeL works the other way around".
+- "A concrete example…" opener removed; "NIVeL works the other way around".
 - §4.2: the question opener became a plain sentence, and the DeepSVG preprocessing sentence was split. The question at
   §4.1 is kept.
 - LayerTracer sentence in §5.4 split.
@@ -228,3 +229,15 @@ New content:
 Unchanged: Table 3.3 placement.
 The build has no errors and no undefined references. It still has 80 pages, and the remaining overfull boxes are the
 same pre-existing ones listed above.
+
+## Final fixes
+
+1. **NIVeL diffusion model.** The paper uses the pretrained DeepFloyd model for its SDS gradients. The authors chose
+   it because it denoises in pixel space, so no image encoder has to be backpropagated through. This was verified via
+   search results quoting the arXiv paper.
+   - Table 5.1 changed from "SDS from Stable Diffusion" to "SDS from DeepFloyd".
+   - §5.3 now names the backbone of each model: Stable Diffusion for VectorFusion, DeepFloyd for NIVeL.
+   - Appendix Table B.2 priors changed from "DeepFloyd + CLIP" to "DeepFloyd", because CLIP is not confirmed.
+   - The appendix Fig. C.3 caption already said DeepFloyd.
+2. **Spelling.** "NIVeL" (as in the paper) is now used everywhere: thesis, readme and these notes.
+3. **Taxonomy caption.** It now reads "Taxonomy of the thirteen analyzed models by generation strategy."

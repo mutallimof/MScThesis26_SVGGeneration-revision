@@ -121,7 +121,7 @@ VectorFusion & SVG parameters & None & Random / Trace & SDS (Stable Diff.) & Par
 SVGDreamer & SVG parameters / LoRA & None & Attention-based (SIVE) & VPSD & Parametric (flat) & Stable Diff. \\
 SVGDreamer++ & SVG parameters / LoRA & None & Random + HIVE & VPSD + HIVE loss & Structured parametric & Stable Diff. + SAM \\
 NeuralSVG & MLP weights + colors/ LoRA & None & Saliency-based & SDS & Implicit neural fields & Stable Diff. \\
-NIVeL & MLP weights + layer colors & None & Random weights & SDS & Implicit neural fields & DeepFloyd + CLIP \\
+NIVeL & MLP weights + layer colors & None & Random weights & SDS & Implicit neural fields & DeepFloyd \\
 Im2Vec\textsuperscript{$\dagger$} & Encoder + RNN + 1D CNN & Raster images & Image encoding & Pixel recon. (raster only) & Parametric paths & None \\
 \bottomrule
 \end{tabularx}
@@ -239,14 +239,14 @@ share components and where they diverge.
     \centering
     \includegraphics[width=\textwidth]{OPT.+NN.png}
     \caption{Neural implicit optimization pipelines. 
-    NeuralSVG (blue) and NiVeL (red) both store geometry 
+    NeuralSVG (blue) and NIVeL (red) both store geometry 
     in MLP weights rather than explicit B\'{e}zier 
     coordinates, but their pipelines differ. NeuralSVG 
     generates an initial layout through saliency-based 
     sampling from a diffusion model, encodes shape indices 
     via positional encoding, and optimizes MLP weights 
     using SDS loss with a LoRA adapter on Stable Diffusion. 
-    NiVeL takes spatial coordinates as input, applies 
+    NIVeL takes spatial coordinates as input, applies 
     frequency encoding, and optimizes layered implicit 
     fields using SDS with entropy loss through DeepFloyd. 
     Both produce SVG output by converting the learned 
