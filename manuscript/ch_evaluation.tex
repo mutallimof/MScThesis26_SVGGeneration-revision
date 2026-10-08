@@ -1,6 +1,8 @@
 \chapter{Evaluation of SVG Generation}
 \label{ch:Evaluation}
 
+Chapter~\ref{ch:supervision} ended with the observation that visual quality 
+always comes first. This chapter asks whether evaluation measures anything else.
 Evaluating SVG generation is harder than evaluating raster 
 image generation. A raster image is just pixels, the only thing that matters is how it looks.
 An SVG is a structured artifact 
@@ -8,7 +10,7 @@ that has to look right (semantic alignment), be geometrically stable, and remain
 editable. These three requirements do not always point in 
 the same direction, and the metrics most commonly used in 
 the literature only measure the first one. 
-This chapter examines how those 13 models are evaluated, which metrics are used, where those practices 
+This chapter examines how the thirteen models are evaluated, which metrics are used, where those practices 
 fall short, and what a more complete framework would need 
 to include.
 
@@ -151,7 +153,7 @@ proposes 18 metrics across understanding, editing, and
 generation dimensions. However, both benchmarks are 
 designed primarily for LLM-based SVG processing, and 
 neither addresses the structural properties of 
-optimization-based or dataset-trained generation methods. 
+optimization-based or dataset-driven generation methods. 
 Zhu et al.~\cite{zhuStructuralEvaluationMetrics2026} go further 
 and measure structure directly: they remove one element at a time and score each 
 element by how much the render changes. 
@@ -206,9 +208,9 @@ geometrically and what they report is notable.
 
 \subsection{Editability}
 This is the most practically 
-important gap. The industry requirement that motivated 
-the scope of this thesis was explicit: generated SVGs 
-must be editable by designers using standard tools. 
+important gap. The practical requirement behind this thesis 
+(Section~\ref{sec:motivation}) is that generated SVGs 
+must be editable by designers in standard tools. 
 None of the metrics in Table~\ref{tab:metrics_used} 
 measure this. Editability is occasionally demonstrated 
 by showing that a generated element can be recolored 
@@ -253,7 +255,7 @@ availability, hardware requirements, and inference time
 across all thirteen models.
 
 The efficiency gap between optimization-based and 
-dataset-trained methods is worth considering. LIVE, the 
+dataset-driven methods is worth considering. LIVE, the 
 simplest reconstruction-supervised method, requires 
 between 2,600 and 10,000 seconds per image on an RTX 
 3090 depending on path count~\cite{maLayerwiseImageVectorization2022}. 
@@ -268,10 +270,10 @@ to 34 seconds~\cite{songLayerTracerCognitiveAlignedLayered2025},
 and SVGFusion in 24 to 36 
 seconds~\cite{xingSVGFusionScalableTexttoSVG2025}. These differences are not small. 
 Optimization-based methods take minutes to hours because they refine parameters iteratively at inference time.
-Dataset-trained models do it in seconds through a single forward pass.
+Dataset-driven models do it in seconds through a single forward pass.
 
 Hardware requirements follow the same pattern but with 
-an important exception. Dataset-trained models are faster, 
+an important exception. Dataset-driven models are faster, 
 but several require enterprise-grade infrastructure during 
 training, such as, SVGFusion trains on multiple A800 GPUs, and 
 LayerTracer on a single A100 with 80GB VRAM. Once trained, 
@@ -334,7 +336,7 @@ LayerTracer  & Public   & A100 80GB (train) & 27--34 s      \\
 Table~\ref{tab:reproducibility} divides 
 along family lines: optimization-based methods 
 are slow and generally reproducible, while several 
-dataset-trained models are fast but require strong hardware in training step.
+dataset-driven models are fast but require strong hardware in training step.
 
 
 \section{Toward a Multi-Dimensional Evaluation Framework}
@@ -408,7 +410,7 @@ generation require? Table~\ref{tab:reproducibility}
 provides the data. This dimension is especially 
 relevant for industrial deployment, where generation 
 speed and infrastructure cost are primary constraints. 
-For dataset-trained models, training counts too. A model 
+For dataset-driven models, training counts too. A model 
 that needs an A100 or several A800 GPUs to train is hard 
 to reproduce, even if inference takes seconds.
 
@@ -422,7 +424,7 @@ Optimization-based methods tend to score well on
 semantic alignment but poorly on layer organization 
 and path economy, and they are mixed on geometric quality. 
 On efficiency most of them are only partial. 
-Dataset-trained methods are fast at inference and score 
+Dataset-driven methods are fast at inference and score 
 better on path economy. On efficiency only DeepSVG and 
 DeepIcon score well once training hardware counts. They 
 vary widely on semantic alignment and editability 
@@ -436,6 +438,8 @@ cannot be independently verified because no public
 implementation is available 
 (Table~\ref{tab:reproducibility}).
 The table maps trade-offs rather than ranking models. 
+Chapter~\ref{ch:synthesis} uses these ratings together with the 
+representation and supervision analysis to compare the models directly.
 
 
 
@@ -451,7 +455,9 @@ the author's assessment based on the observations from papers and
 the architectural analysis in Chapters~\ref{ch:representation} 
 and~\ref{ch:supervision}. Editability was not measured for any 
 model. Efficiency takes into account the hardware listed in 
-Table~\ref{tab:reproducibility}.}
+Table~\ref{tab:reproducibility}. n/a = not applicable: LIVE and SAMVG 
+reconstruct a target image, so text alignment does not apply. 
+$^\dagger$Single forward pass; time not reported.}
 \label{tab:framework}
 \small
 \begin{tabularx}{\textwidth}{l c c c c c c}
@@ -464,18 +470,18 @@ Table~\ref{tab:reproducibility}.}
 \midrule
 \multicolumn{7}{l}{\textit{Optimization-Based}} \\
 \midrule
-LIVE         & -               & -               & \textasciitilde  & - & -               & \textasciitilde \\
-SAMVG        & -*              & \textasciitilde & \textasciitilde  & - & \textasciitilde & \textasciitilde\\
+LIVE         & n/a             & -               & \textasciitilde  & - & -               & \textasciitilde \\
+SAMVG        & n/a             & \textasciitilde & \textasciitilde  & - & \textasciitilde & \textasciitilde\\
 VectorFusion & +*              & -               & -                & - & -               & \textasciitilde \\
 SVGDreamer   & +*              & \textasciitilde & \textasciitilde  & - & \textasciitilde & \textasciitilde \\
 SVGDreamer++ & +*              & \textasciitilde & +                & - & \textasciitilde & \textasciitilde \\
-NIVeL        & +               & +               & +                & + & \textasciitilde & \textasciitilde \\
+NIVeL        & +*              & +               & +                & + & \textasciitilde & \textasciitilde \\
 NeuralSVG    & +*              & +               & +                & + & +               & \textasciitilde \\
-Im2Vec       & \textasciitilde & \textasciitilde & \textasciitilde  & - & \textasciitilde & + \\
+Im2Vec       & \textasciitilde & \textasciitilde & \textasciitilde  & - & \textasciitilde & +$^\dagger$ \\
 \midrule
 \multicolumn{7}{l}{\textit{Dataset-Driven}} \\
 \midrule
-DeepSVG      & \textasciitilde & \textasciitilde & \textasciitilde  & - & \textasciitilde & + \\
+DeepSVG      & \textasciitilde & \textasciitilde & \textasciitilde  & - & \textasciitilde & +$^\dagger$ \\
 DeepIcon     & \textasciitilde & +               & +*               & - & \textasciitilde & + \\
 SVGFusion    & +*              & +               & +                & + & +               & \textasciitilde \\
 T2V-NPR      & +*              & +               & +*               & - & \textasciitilde & - \\

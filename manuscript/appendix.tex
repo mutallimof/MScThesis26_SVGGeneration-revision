@@ -85,16 +85,16 @@ and Figure~\ref{fig:taxonomy}.
 \toprule
 \textbf{Model} & \textbf{Task Type} & \textbf{Inference} & \textbf{Input} & \textbf{Output} & \textbf{Supervision} & \textbf{Core Idea} \\
 \midrule
-VectorFusion & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup. & Distills diffusion priors via differentiable rasterization. \\
+VectorFusion & Text-to-SVG & Iterative Opt. & Text & Paths & Semantic & Distills diffusion priors via differentiable rasterization. \\
         SVGFusion & Text-to-SVG & Forward Dec. & Text & Layers/Paths & Supervised & Continuous latent space learning using SVGX dataset. \\
-        SVGDreamer & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup. & Semantic-driven vectorization (SIVE) and VPSD. \\
-        SVGDreamer++ & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup. & Hierarchical optimization with adaptive primitive control. \\
-        T2V-NPR & Text-to-SVG & Hybrid & Text & Layers/Paths & Sup. + Self-Sup. & Dual-branch VAE learns path latent space constraints. \\
+        SVGDreamer & Text-to-SVG & Iterative Opt. & Text & Paths & Semantic & Semantic-driven vectorization (SIVE) and VPSD. \\
+        SVGDreamer++ & Text-to-SVG & Iterative Opt. & Text & Paths & Semantic & Hierarchical optimization with adaptive primitive control. \\
+        T2V-NPR & Text-to-SVG & Hybrid & Text & Layers/Paths & Sup. + Semantic & Dual-branch VAE learns path latent space constraints. \\
         LayerTracer & Text-to-SVG & Hybrid & Text/Img & Layers/Paths & Supervised & Models designer construction logic via DiT sequences. \\
         Im2Vec & Vectorization & Forward Dec. & Image & Paths & Pixel recon. & Differentiable rasterizer allows learning from appearance. \\
         SAMVG & Vectorization & Iterative Opt. & Image & Paths & Pixel recon. & Uses SAM for semantic initialization in vectorization. \\
-        NIVeL & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Self-Sup. & Implicit neural layers as optimization domain for SDS. \\
-        NeuralSVG & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Self-Sup. & Scene encoded in MLP weights for layered shapes. \\
+        NIVeL & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Semantic & Implicit neural layers as optimization domain for SDS. \\
+        NeuralSVG & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Semantic & Scene encoded in MLP weights for layered shapes. \\
         LIVE & Vectorization & Iterative Opt. & Image & Paths & Pixel recon. & Layer-wise hierarchical optimization of vector graphs. \\
         DeepSVG & Unconditional & Forward Dec. & None & Paths & Supervised & Hierarchical Transformer for shape/command disentanglement. \\
         DeepIcon & Vectorization & Forward Dec. & Image & Layers/Paths & Supervised & Hierarchical network for direct image-to-SVG translation. \\
@@ -135,12 +135,12 @@ Im2Vec\textsuperscript{$\dagger$} & Encoder + RNN + 1D CNN & Raster images & Ima
 \end{landscape}
 
 \begin{landscape}
-\section{Training Architecture: Dataset-Trained Methods}
+\section{Training Architecture: Dataset-Driven Methods}
 \label{app:arch_data}
 
 \begin{center}
 \small
-\captionof{table}{Training architecture of the dataset-trained methods.}
+\captionof{table}{Training architecture of the dataset-driven methods.}
 \label{tab:app_arch_data}
 \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{2.85cm} >{\raggedright\arraybackslash}p{3.04cm} >{\raggedright\arraybackslash}p{2.32cm} >{\raggedright\arraybackslash}p{2.32cm} >{\raggedright\arraybackslash}p{2.46cm} >{\raggedright\arraybackslash}p{2.90cm} >{\raggedright\arraybackslash}X}
 \toprule

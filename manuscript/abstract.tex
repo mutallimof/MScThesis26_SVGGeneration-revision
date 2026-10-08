@@ -11,11 +11,11 @@ building a model that generates SVG. This thesis analyzes SVG generation methods
 to understand how internal design choices affect the structure of output. The analysis is shaped around three dimensions, 
 how models represent vector geometry internally, what supervision signals guide the generation process and which metrics 
 are useful to evaluate the SVG. Representation and supervision interact rather than operate independently and they are two 
-main parts of internal design of models. The analysis showed that same loss function can produce different structural outcomes 
+main parts of internal design of models. The analysis showed that the same loss function can produce different structural outcomes 
 depending on the representation choice and the same representation behaves differently under different supervision. 
 The most consistent pattern across the models is a trade-off between visual realism and editability. Models that generate the 
-most visually detailed outputs also produce the most fragmented SVG files, although methods that constrain their representation 
-or learn from data produce cleaner results but within narrower domains. Current evaluation metrics (FID, CLIP, LPIPS) all operate 
+most visually detailed outputs also produce the most fragmented SVG files, while methods that constrain their representation 
+or learn from data produce cleaner results, but within narrower domains. Current evaluation metrics (FID, CLIP, LPIPS) all operate 
 on rendered pixels and cannot detect structural differences. To address this, the thesis proposes a six-dimension evaluation 
 framework that includes path economy, geometric quality, layer organization, and editability alongside visual metrics. 
 The thesis does not propose a new model. It provides a framework for understanding why current models produce the structures 

@@ -8,8 +8,9 @@ is getting closer to the goal or further away. That signal might come from a tar
 a text prompt scored by CLIP, a diffusion model's learned prior, or the structure of a training dataset itself.
 
 What makes supervision in this domain unusual is that it interacts with representation. 
-The same loss function applied to explicit B\'{e}zier paths and to implicit neural fields 
-produces different geometric outcomes, because gradients propagate differently through each representation. 
+A similar loss applied to explicit B\'{e}zier paths and to implicit neural fields 
+produces different geometric outcomes. The representation is not the only difference between such models, 
+but it is the biggest one (Section~\ref{sec:rep_sup_interaction}). 
 This is why Chapters~\ref{ch:representation} and~\ref{ch:supervision} need to be read together, 
 neither dimension explains the structural properties of the output on its own.
 
@@ -48,7 +49,7 @@ LayerTracer & Denoising on layered construction sequences & Training \\
 In short: render the SVG, compare it to a target image, update the parameters. 
 That is the entire loop. Reconstruction-based supervision is the most 
 direct application of the losses described in Section~\ref{sec:recon_losses}, 
-and it works through DiffVG~\cite{liDifferentiableVectorGraphics2020a}.
+and for the optimization methods and Im2Vec it works through DiffVG~\cite{liDifferentiableVectorGraphics2020a}.
 Because the target is known, gradients provide clear information about what should change. 
 When datasets contain clean SVG examples, models trained this way can absorb typical path 
 counts from the data. DeepSVG, DeepIcon, and Im2Vec all use reconstruction 
@@ -105,9 +106,9 @@ NeuralSVG reaches comparable visual quality with 16 shapes.
 
 Diffusion gradients operate in pixel space and reward perceptual realism. 
 They do not reward geometric simplicity. Without structural constraints, 
-optimization tends to add more primitives to satisfy visual objectives.
+these methods need a large path budget to satisfy visual objectives.
 Inference cost is also high, every generation requires repeated rendering and 
-diffusion evaluation cycles, unlike dataset-trained models that produce output in a single pass.
+diffusion evaluation cycles, unlike dataset-driven models that produce output in a single pass.
 
 \begin{figure}[htbp]
     \centering
@@ -183,7 +184,7 @@ SAMVG~\cite{zhuSAMVGMultistageImage2023} is the clearest example.
 It uses the Segment Anything Model to define semantically meaningful 
 regions before any vector optimization begins. The loss function is still pixel reconstruction, 
 same as LIVE. But SAMVG's outputs have cleaner boundaries and less path fragmentation, 
-because the starting point already encodes where objects are. The supervision signal did not change. 
+because the starting point already encodes where objects are. The kind of supervision did not change. 
 The initialization did, and that made the structural difference (Figure~\ref{fig:init_comparison}). 
 The two outputs look almost identical at first sight, 
 and most people would not notice a difference. But look 
@@ -219,9 +220,8 @@ its structure comes from the training data through sampling. LayerTracer takes t
 its training data encodes construction order (Figure~\ref{fig:serpentine}), 
 so the model learns to produce layered outputs without any explicit structural loss. 
 The dataset itself is the structural prior.
-This explains why models using the same 
-diffusion-based loss produce very different structural outcomes. When meaningful priors are absent, 
-diffusion optimization piles on primitives. When structured initialization is present, 
+When meaningful priors are absent, 
+diffusion optimization needs many primitives. When structured initialization is present, 
 the same loss produces cleaner geometry with fewer paths. Supervision tells you what the model optimizes for. 
 Initialization tells you where it starts. That starting point often determines whether the result is editable.
 

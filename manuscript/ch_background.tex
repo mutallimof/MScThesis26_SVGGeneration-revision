@@ -59,7 +59,7 @@ a number.
 \begin{figure}[htbp]
 \centering
 \begin{minipage}{0.52\textwidth}
-\begin{lstlisting}[language=XML, basicstyle=\small\ttfamily]
+\begin{lstlisting}[language=XML, basicstyle=\small\ttfamily, showstringspaces=false]
 <svg xmlns="http://www.w3.org/2000/svg"
      width="200" height="200">
   <!-- Face -->
@@ -116,9 +116,9 @@ during optimization.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{Bezier_grad123.png}
-\caption{B\'{e}zier curves of grade 1, 2, and 3 (red) with 
+\caption{B\'{e}zier curves of degree 1, 2, and 3 (red) with 
 their control polygons (gray). From left to right, an 
-additional control point (blue) is added at each grade. 
+additional control point (blue) is added at each degree. 
 The curve changes direction and curvature as control points 
 are inserted or moved. Image: Wikimedia 
 Commons~\cite{wikiBezier}.}
@@ -173,15 +173,13 @@ al.~\cite{liDifferentiableVectorGraphics2020a} made it practically possible
 to optimize these parameters directly using image-based loss 
 functions: a graphic is initialized as a collection of 
 primitives, and their parameters are iteratively refined until 
-the rendered output matches a target. Before DiffVG, this kind 
-of gradient-based update of vector primitives was not 
-straightforward.
+the rendered output matches a target.
 
 \subsection{Sequential Representation}
 \label{sec:sequential_repr}
 
 The idea of treating vector graphics as ordered sequences of 
-drawing commands goes back to Ha and 
+drawing commands goes back to SketchRNN by Ha and 
 Eck~\cite{haNeuralRepresentationSketch2017}, who showed that 
 recurrent networks could learn to generate stroke-based 
 drawings by modelling them as sequences of pen movements. 
@@ -233,7 +231,7 @@ curve only appears after it is traced from the
 field~\cite{thamizharasanNIVeLNeuralImplicit2024}.
 
 
-\subsection{Latent Representation}
+\subsection{Latent Space as a Generative Layer}
 \label{sec:latent_repr}
 
 Latent representation is not a geometric representation at all. 
@@ -291,22 +289,6 @@ possible to apply the full range of image-based supervision
 strategies, reconstruction losses, CLIP guidance, diffusion 
 priors directly to vector parameters.
 
-Not every analyzed model needs differentiable rendering. 
-DeepSVG and DeepIcon are trained directly on SVG commands, with 
-losses that compare predicted and ground-truth commands, so no 
-rasterizer is involved~\cite{carlierDeepSVGHierarchicalGenerative2020, bingDeepIconHierarchicalNetwork2024}. 
-LayerTracer generates raster construction frames with a diffusion 
-model and vectorizes them afterwards with a separate tracing 
-step~\cite{songLayerTracerCognitiveAlignedLayered2025}. NIVeL 
-optimizes implicit fields on a pixel grid and extracts curves only 
-at the end~\cite{thamizharasanNIVeLNeuralImplicit2024}. DiffVG is 
-also not the only differentiable rasterizer. B\'{e}zier Splatting, 
-for example, represents each curve as 2D Gaussians placed along it 
-and reports much faster forward and backward passes than 
-DiffVG~\cite{liuBezierSplattingFast2025}.
-
-
-
 The core idea is shown in Figure~\ref{fig:diffvg_pipeline}. 
 Normally, converting vector shapes to pixels is a one-way 
 street: you can go from shapes to pixels, but not back. 
@@ -341,6 +323,20 @@ back through DiffVG to update the vector parameters
 directly~\cite{liDifferentiableVectorGraphics2020a}.}
 \label{fig:diffvg_pipeline}
 \end{figure}
+
+Not every analyzed model needs differentiable rendering. 
+DeepSVG and DeepIcon are trained directly on SVG commands, with 
+losses that compare predicted and ground-truth commands, so no 
+rasterizer is involved~\cite{carlierDeepSVGHierarchicalGenerative2020, bingDeepIconHierarchicalNetwork2024}. 
+LayerTracer generates raster construction frames with a diffusion 
+model and vectorizes them afterwards with a separate tracing 
+step~\cite{songLayerTracerCognitiveAlignedLayered2025}. NIVeL 
+optimizes implicit fields on a pixel grid and extracts curves only 
+at the end~\cite{thamizharasanNIVeLNeuralImplicit2024}. DiffVG is 
+also not the only differentiable rasterizer. B\'{e}zier Splatting, 
+for example, represents each curve as 2D Gaussians placed along it 
+and reports much faster forward and backward passes than 
+DiffVG~\cite{liuBezierSplattingFast2025}.
 
 \section{Loss Functions and Semantic Guidance}
 
@@ -475,6 +471,7 @@ Variational Score Distillation (VSD) was introduced by
 ProlificDreamer~\cite{wangProlificDreamerHighFidelityDiverse2023} 
 for text-to-3D. Instead of one output, it keeps a few versions 
 at once, called particles. A LoRA copy of the diffusion model 
+(a small set of extra low-rank weights added to the frozen model) 
 is trained next to them and learns what they currently look 
 like. This works with normal guidance weights and gives more 
 detail and variety. SVGDreamer builds on it with Vectorized 
@@ -484,7 +481,9 @@ in Chapter~\ref{ch:supervision}. The complete optimization
 loops for SDS and VSD are shown in 
 Figures~\ref{fig:sds_loop} and~\ref{fig:svgdreamer_vpsd}, 
 where the role of the diffusion model as a supervision 
-signal becomes solid.
+signal becomes concrete. Chapter~\ref{ch:Landscape} now 
+introduces the thirteen models that are built from these 
+blocks.
 
 
 

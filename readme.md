@@ -25,7 +25,7 @@ This thesis argues that the structural quality of generated SVGs is primarily sh
 
 ## Key Contributions
 
-- **Comparative framework** covering 13 models in three groups: optimization-based (LIVE, SAMVG, VectorFusion, SVGDreamer, etc.), learning-based (DeepSVG, DeepIcon, SVGFusion, LayerTracer) and hybrid (Im2Vec, T2V-NPR)
+- **Comparative framework** covering 13 models in three groups: optimization-based (LIVE, SAMVG, VectorFusion, SVGDreamer, etc.), dataset-driven (DeepSVG, DeepIcon, SVGFusion, LayerTracer) and hybrid (Im2Vec, T2V-NPR)
 - **Six-dimension evaluation framework** for assessing SVG quality: semantic alignment, path economy, geometric quality, layer organization, editability, and efficiency
 - **Five conditions for clean, editable SVG** (Table 7.2) — no existing model satisfies all five
 - **Analysis of the DiffVG bottleneck** — why nearly every optimization-based model inherits flat, uneditable path structure
@@ -35,7 +35,7 @@ This thesis argues that the structural quality of generated SVGs is primarily sh
 
 Optimization-based: LIVE, SAMVG, VectorFusion, SVGDreamer/++, NIVeL, NeuralSVG
 
-Learning-based: DeepSVG, DeepIcon, SVGFusion, LayerTracer
+Dataset-driven: DeepSVG, DeepIcon, SVGFusion, LayerTracer
 
 Hybrid: Im2Vec (trained without vector supervision), T2V-NPR (trained path prior + per-prompt optimization)
 

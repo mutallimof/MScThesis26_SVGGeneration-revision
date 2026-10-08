@@ -44,7 +44,7 @@ for tree={
     [Semantic-supervised{,} parametric:\\VectorFusion{,} SVGDreamer{,} SVGDreamer++]
     [Semantic-supervised{,} neural implicit:\\NIVeL{,} NeuralSVG]
   ]
-  [Learning-based\\(trained{,} forward generation)
+  [Dataset-driven\\(trained{,} forward generation)
     [Sequential tokens: DeepSVG{,} DeepIcon]
     [Latent diffusion: SVGFusion]
     [Layered diffusion: LayerTracer]
@@ -136,11 +136,13 @@ model in this group implements those differently.
 LIVE~\cite{maLayerwiseImageVectorization2022} is the simplest form of optimization-based vectorization. 
 It starts from an empty canvas, finds where the biggest visual gap is between the current SVG and the target image, 
 drops a new path there, and optimizes everything together. It repeats this process layer by layer until the reconstruction is close enough. 
-Because paths are added one at a time from coarse to fine, the output tends to have a layered structure where each path has a recognizable role. 
+Its loss combines a pixel loss weighted toward shape contours (UDF) with a Xing loss that penalizes self-intersecting paths~\cite{maLayerwiseImageVectorization2022}. 
+Because paths are added one at a time from coarse to fine, the output tends to have a layered structure where each path has a recognizable role, 
+at least at small path counts. With many paths this breaks down (Section~\ref{sec:parametric}). 
 SAMVG~\cite{zhuSAMVGMultistageImage2023} follows the same optimization loop but starts from a better place: instead of finding gaps by 
 pixel difference, it uses the Segment Anything Model~\cite{kirillovSegmentAnything2023} to identify semantically meaningful 
-regions before any optimization begins. The loss is the same kind, pixel reconstruction. The difference in output quality comes almost entirely 
-from where optimization starts, which suggests that initialization matters as much as what you optimize for.
+regions before any optimization begins. The loss is the same kind, pixel reconstruction. Much of the difference in output quality comes 
+from where optimization starts (Section~\ref{sec:init_priors}). Both pipelines are shown in Figure~\ref{fig:opt_recon_pipelines}.
 
 Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} does not fit cleanly into either group and is listed as a hybrid in Figure~\ref{fig:taxonomy}. 
 It trains an encoder-decoder to predict vector primitives from a raster image in a single forward pass, 
@@ -172,11 +174,13 @@ replacing SDS with Vectorized Particle-based Score Distillation
 distribution of particles rather than a single point estimate 
 (Figure~\ref{fig:svgdreamer_vpsd}). SVGDreamer also introduces 
 explicit control over how many primitives are used and how they 
-are organized into semantic layers. 
+are organized into semantic layers, through its semantic-driven 
+image vectorization (SIVE). 
 SVGDreamer++~\cite{xingSVGDreamerAdvancingEditability2025} extends 
-this further with a hierarchical refinement mechanism that can add 
-or remove primitives during generation based on how much detail 
-each region needs.
+this further with hierarchical image vectorization (HIVE), which works 
+on objects and their parts, and with an adaptive control that can add 
+or remove primitives during optimization. The pipelines of all three 
+are compared in Figure~\ref{fig:opt_semantic_pipelines}.
 
 
 \begin{figure}[htbp]
@@ -214,22 +218,23 @@ NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025} take
 a different approach to the same optimization loop. 
 They store geometry as the weights of a small MLP, instead of 
 storing geometry as explicit B\'{e}zier coordinates that are 
-adjusted directly. The network takes a number (shape index) 
-and outputs the geometry for that shape. Nothing is stored as an explicit path.
+adjusted directly. In NeuralSVG the network takes a shape index 
+and outputs the geometry for that shape. In NIVeL it takes a pixel 
+coordinate and returns which layer covers it. Nothing is stored as an explicit path.
 
-This brings different properties to optimization based approaches. Compared to 
-parametric methods, where each path is an independent object and 
-optimization can push them in different directions. But with an 
+This brings different properties to optimization based approaches. In 
+parametric methods each path is an independent object, and 
+optimization can push the paths in different directions. With an 
 MLP, all shapes come from the same learned function, which 
 creates a bias toward global coherence. NIVeL uses this to 
 decompose scenes into layered components, where each layer is 
 a separate neural field whose zero-level set defines a shape 
-boundary. NeuralSVG assigns each shape a fixed index and 
-optimizes the network so that each index consistently maps to 
-the same visual region across iterations. The outputs from 
+boundary. NeuralSVG assigns each shape a fixed index 
+(Section~\ref{sec:implicit}). The outputs from 
 both tend to be cleaner and more organized than purely 
-parametric optimization, but inference is slower because the 
-network has to be optimized from scratch for every new prompt.
+parametric optimization, but they still need a full optimization 
+run for every new prompt. Figure~\ref{fig:opt_neural_pipelines} 
+compares the two pipelines.
 
 \begin{table}[htbp]
 \centering
@@ -299,8 +304,8 @@ SVG-Icons8 dataset.
 The latent space separates path-level and command-level
 representations, allowing the model to capture both coarse
 shape organization and fine geometric detail. At inference,
-SVG commands are generated autoregressively from a sampled
-latent vector. DeepSVG demonstrated that structured SVG
+all SVG commands are decoded from a sampled latent vector
+in a single forward pass, not one after another~\cite{carlierDeepSVGHierarchicalGenerative2020}. DeepSVG demonstrated that structured SVG
 generation from a learned latent space is feasible, and
 also exposed the difficulty of maintaining geometric
 validity across long command sequences.
@@ -337,10 +342,10 @@ the optimization methods above.
 
 SVGFusion~\cite{xingSVGFusionScalableTexttoSVG2025} is the most architecturally
 complex model in this family. It first learns a continuous
-latent space of vector graphics using a Vector Path
-Variational Autoencoder (VP-VAE), trained to compress path
-sequences into dense latent representations. Generation
-then occurs through a Vector Semantic Diffusion Transformer
+latent space of vector graphics using a Vector-Pixel Fusion
+Variational Autoencoder (VP-VAE), which encodes each SVG
+together with its rendering. Generation
+then occurs through a Vector Space Diffusion Transformer
 (VS-DiT), which operates entirely in this learned latent
 space. This makes SVGFusion distinct from the
 semantic-supervised optimization methods in the previous
@@ -396,7 +401,7 @@ generate SVGs through a single trained forward pass
 (\textit{Forward Dec.}). The \textit{Supervision} column 
 indicates the primary signal driving generation: 
 \textit{Pixel recon.} refers to reconstruction against a 
-target raster image without a pretrained model, \textit{Self-Sup.} to semantic 
+target raster image without a pretrained model, \textit{Semantic} to 
 signals derived from frozen pretrained models (diffusion or 
 CLIP), and \textit{Supervised} to training against 
 ground-truth SVG data. \textit{Hybrid} in the Inference 
@@ -422,16 +427,16 @@ LIVE         & Vectorization      & Iterative Opt. & Image    & Paths        & P
 SAMVG        & Vectorization      & Iterative Opt. & Image    & Paths        & Pixel recon. \\
 Im2Vec       & Vectorization      & Forward Dec.   & Image    & Paths        & Pixel recon. \\
 \midrule
-VectorFusion & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
-SVGDreamer   & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
-SVGDreamer++ & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Self-Sup.  \\
-NIVeL        & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Self-Sup.  \\
-NeuralSVG    & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Self-Sup.  \\
+VectorFusion & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Semantic   \\
+SVGDreamer   & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Semantic   \\
+SVGDreamer++ & Text-to-SVG        & Iterative Opt. & Text     & Paths        & Semantic   \\
+NIVeL        & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Semantic   \\
+NeuralSVG    & Text-to-SVG        & Iterative Opt. & Text     & Layers/Paths & Semantic   \\
 \midrule
 DeepSVG      & Unconditional      & Forward Dec.   & None     & Paths        & Supervised \\
 DeepIcon     & Vectorization      & Forward Dec.   & Image    & Layers/Paths & Supervised \\
 SVGFusion    & Text-to-SVG        & Forward Dec.   & Text     & Layers/Paths & Supervised \\
-T2V-NPR      & Text-to-SVG        & Hybrid         & Text     & Layers/Paths & Sup. + Self-Sup. \\
+T2V-NPR      & Text-to-SVG        & Hybrid         & Text     & Layers/Paths & Sup. + Semantic \\
 LayerTracer  & Text-to-SVG        & Hybrid         & Text/Img & Layers/Paths & Supervised \\
 \bottomrule
 \end{tabularx}

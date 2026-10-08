@@ -28,11 +28,11 @@ confirm this way. Anything unconfirmed is listed below.
 | SVGDreamer++ | Optimization, semantic, parametric | Text-to-SVG | none | iterative opt. | VPSD + HIVE | structured parametric | not explicitly confirmed | TPAMI 2025 |
 | NIVeL | Optimization, semantic, neural implicit | Text-to-SVG | none | iterative opt. | SDS (DeepFloyd, pixel-space diffusion) | implicit fields on a grid, curves via marching squares | **no** (not in the optimization loop) | CVPR 2024 |
 | NeuralSVG | Optimization, semantic, neural implicit | Text-to-SVG | none | iterative opt. | SDS + LoRA | MLP: shape index → control points + colour; dropout-based ordering of shapes | yes (README) | ICCV 2025 |
-| DeepSVG | Learning-based, sequential | Unconditional | SVG-Icons8 | forward | cross-entropy on commands/arguments + KL | canonicalized: start at topmost-leftmost point, clockwise; paths sorted lexicographically by start (ordered variant) | no | NeurIPS 2020 |
-| DeepIcon | Learning-based, sequential | Vectorization / image | SVG-Icons8 | forward | reconstruction against SVG commands; CLIP image encoder | sequential tokens | no ("bypassing the need for a differentiable rasterizer") | DICTA 2024 |
-| SVGFusion | Learning-based, latent diffusion | Text-to-SVG | SVGX (~240k SVGs) | sampling with VS-DiT, 24–36 s, no optimization | VP-VAE recon. + latent denoising | latent; outputs include circle, rect, ellipse | n/a | arXiv only (code not released) |
+| DeepSVG | Dataset-driven, sequential | Unconditional | SVG-Icons8 | forward | cross-entropy on commands/arguments + KL | canonicalized: start at topmost-leftmost point, clockwise; paths sorted lexicographically by start (ordered variant) | no | NeurIPS 2020 |
+| DeepIcon | Dataset-driven, sequential | Vectorization / image | SVG-Icons8 | forward | reconstruction against SVG commands; CLIP image encoder | sequential tokens | no ("bypassing the need for a differentiable rasterizer") | DICTA 2024 |
+| SVGFusion | Dataset-driven, latent diffusion | Text-to-SVG | SVGX (~240k SVGs) | sampling with VS-DiT, 24–36 s, no optimization | VP-VAE recon. + latent denoising | latent; outputs include circle, rect, ellipse | n/a | arXiv only (code not released) |
 | T2V-NPR | Hybrid | Text-to-SVG | FIGR-8-SVG (path VAE) | per-prompt VSD optimization of path latents + layer-wise vectorization | VSD | neural path latent | — | ACM TOG 43(4) / SIGGRAPH 2024 |
-| LayerTracer | Learning-based, layered diffusion | Text-to-SVG (also image-conditioned) | ~20k designer-made layered SVGs, turned into construction sequences in a serpentine grid layout | forward diffusion + vectorization step (vtracer) | denoising | layered sequences | no | ICCV 2025 |
+| LayerTracer | Dataset-driven, layered diffusion | Text-to-SVG (also image-conditioned) | ~20k designer-made layered SVGs, turned into construction sequences in a serpentine grid layout | forward diffusion + vectorization step (vtracer) | denoising | layered sequences | no | ICCV 2025 |
 
 Other verified facts used in the text: DiffVG supports Circle, Ellipse, Path, Polygon and Rect (`pydiffvg/shape.py`).
 VSD comes from ProlificDreamer (Wang et al., NeurIPS 2023, pp. 8406–8441). The SDS gradient is the weighted difference
@@ -241,3 +241,41 @@ same pre-existing ones listed above.
    - The appendix Fig. C.3 caption already said DeepFloyd.
 2. **Spelling.** "NIVeL" (as in the paper) is now used everywhere: thesis, readme and these notes.
 3. **Taxonomy caption.** It now reads "Taxonomy of the thirteen analyzed models by generation strategy."
+
+## Narrative review round
+
+All A items (A1–A34) were applied. From A35 only the grammar fixes were applied: abstract "the same loss",
+"although … but" → "while …, but", and the intro sentence "which we will see more over time".
+
+Newly verified facts (via search results quoting the papers):
+- DeepSVG decodes all commands non-autoregressively, in a single forward pass.
+- SVGFusion's modules are the Vector-Pixel Fusion VAE (VP-VAE), which encodes each SVG together with its rendering,
+  and the Vector Space Diffusion Transformer (VS-DiT).
+- SVGDreamer assigns a set (non-adaptive) number of primitives to each object through SIVE. SVGDreamer++ adjusts
+  the number of primitives during optimization. Both were added to "Primitive count control" in Table 7.2 (B8).
+
+Decisions applied:
+- B1: "same loss, different representation" softened in the Ch. 5 intro and §7.1. The representation is the biggest of
+  several differences (LoRA, saliency init, dropout ordering, preset shape count).
+- B2: "optimization adds paths" → "these methods are run with large path budgets"; only LIVE and SVGDreamer++ add paths.
+- B3: error accumulation is now attributed to models that predict one command after another (SketchRNN). DeepSVG's
+  icon-level output is explained by its data (§4.2, §4.6).
+- B4: RQ6 → "reported and assessed quality" (§1.5, §8.1).
+- B5: "dataset-driven" everywhere, including the taxonomy node, the appendix and the readme.
+- B6: the "Self-Sup." label is now "Semantic" (Table 3.3, its definition, Appendix B.1).
+- B7: novelty claims in §8.2 softened.
+- B9: the evaluation chapter now points to the motivation in §1.1 instead of an "industry requirement".
+- B10: §2.2.4 and §4.4 are retitled "Latent Space as a Generative Layer". The Table 4.1 and Fig. 4.1 captions say so.
+- B11–B13 (Table 6.3):
+  - LIVE and SAMVG semantic alignment is now "n/a".
+  - Im2Vec and DeepSVG efficiency is "+†" with the note "single forward pass; time not reported".
+  - NIVeL semantic alignment is now "+*".
+- B14: future work cites SVGDreamer++'s HIVE instead of VPSD.
+- B15: the sentence was cut.
+
+Supervisor point: §4.6 now describes the visible parts of the NeuralSVG rocket (dark body with a lighter stripe,
+angled fins, pale flame, flat background) without a shape-by-shape mapping. The rocket is in Fig. 4.1 in the current
+numbering.
+
+The build has no errors and no undefined references. It has 79 pages, and the remaining overfull boxes are the same
+11 pre-existing ones.

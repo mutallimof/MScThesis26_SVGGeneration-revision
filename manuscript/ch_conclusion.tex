@@ -52,9 +52,14 @@ Chapter~\ref{ch:Introduction}.
 \textbf{RQ3: What types of deep learning architectures 
 are used for SVG generation?}
 
-The analyzed models employ four distinct architecture 
-types, described in Chapter~\ref{ch:Landscape} and 
-analyzed in Chapter~\ref{ch:representation}. The 
+The analyzed models fall into four architecture types: 
+per-instance optimization through a differentiable 
+rasterizer, small MLPs that encode the geometry 
+implicitly, transformer encoder-decoders over SVG 
+commands (DeepSVG, DeepIcon), and VAE or diffusion 
+transformer combinations (SVGFusion, LayerTracer). 
+They are described in Chapter~\ref{ch:Landscape} and 
+Tables~\ref{tab:arch_optbased} and~\ref{tab:arch_dataset}. The 
 structural properties of each type's output differ 
 more than their visual quality, which is the 
 observation that motivated the representation-focused 
@@ -90,10 +95,12 @@ organization, editability, and efficiency. The chapter
 also identified SVGEditBench and SVGenius as emerging 
 benchmarks, while noting that both were designed for 
 language-model-based SVG generation and do not 
-directly apply to the optimization and dataset-trained 
-models analyzed here.
+directly apply to the optimization and dataset-driven 
+models analyzed here. Zhu et al.~\cite{zhuStructuralEvaluationMetrics2026} 
+measure structure directly, which is the direction the 
+framework points to.
 
-\textbf{RQ6: What is the observed quality of SVG 
+\textbf{RQ6: What is the reported and assessed quality of SVG 
 outputs across different models?}
 
 No model in the analyzed set performs well across all 
@@ -120,7 +127,7 @@ consistent basis for comparing methods that differ
 substantially in architecture and training strategy, 
 and makes explicit a trade-off (between visual realism 
 and editability) that is present across the field but 
-rarely stated directly.
+seldom used to compare methods.
 
 A secondary contribution is a multi-dimensional 
 evaluation perspective that extends beyond pixel-level 
@@ -136,7 +143,8 @@ clean and editable SVG output (primitive count control,
 semantic decomposition, constrained 
 supervision, informed initialization, and design-aware 
 priors) which represent a checklist for future model 
-design that does not currently exist in the literature.
+design that, to my knowledge, has not been put together 
+in this form before.
 
 Additionally, architectural pipeline diagrams were 
 created to visualize how the optimization-based 
@@ -156,7 +164,11 @@ different models evaluate on different datasets, use
 different implementations of shared metrics, and report 
 results under different experimental conditions. The framework proposed in 
 Chapter~\ref{ch:Evaluation} is conceptual rather than 
-being practically applicable.
+being practically applicable. The ratings in 
+Table~\ref{tab:framework} are my assessment from the papers, 
+not measurements, and the examples shown are the papers' own 
+figures. The selection of thirteen models is not exhaustive 
+(Section~\ref{sec:objective}).
 
 
 \section{Future Work}
@@ -184,8 +196,9 @@ Supervision within structured representation spaces
 (path-level latent constraints, layer consistency 
 objectives, construction sequence learning) appears to 
 regulate the fragmentation that characterizes purely 
-raster-space optimization. SVGDreamer's VPSD approach 
-and LayerTracer's construction-sequence supervision 
+raster-space optimization. SVGDreamer++'s HIVE, which 
+supervises the optimization at the level of objects and 
+their parts, and LayerTracer's construction-sequence supervision 
 both point in this direction from different starting 
 points. Converging these two approaches is a concrete 
 research question.
