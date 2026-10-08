@@ -23,7 +23,42 @@ models together cover the full range of design decisions of models
 in two dimensions already mentioned: representation and supervision, that shape how SVG
 structure emerges from a generation pipeline. A summary of
 all thirteen models is provided in
-Table~\ref{tab:model_overview}.
+Table~\ref{tab:model_overview}, and Figure~\ref{fig:taxonomy}
+shows how they are grouped in this thesis.
+
+\begin{figure}[tbp]
+\centering
+\begin{forest}
+for tree={
+  grow'=0, draw, rounded corners, fill=gray!10,
+  font=\footnotesize, align=left,
+  anchor=west, child anchor=west, parent anchor=east,
+  l sep=5mm, s sep=1.2mm, inner sep=2pt,
+  tier/.option=level,
+  edge path={\noexpand\path[\forestoption{edge}]
+    (!u.parent anchor) -- +(2.5mm,0) |- (.child anchor)\forestoption{edge label};}
+}
+[13 analyzed\\models
+  [Optimization-based\\(per instance)
+    [Reconstruction-supervised:\\LIVE{,} SAMVG]
+    [Semantic-supervised{,} parametric:\\VectorFusion{,} SVGDreamer{,} SVGDreamer++]
+    [Semantic-supervised{,} neural implicit:\\NiVeL{,} NeuralSVG]
+  ]
+  [Learning-based\\(trained{,} forward generation)
+    [Sequential tokens: DeepSVG{,} DeepIcon]
+    [Latent diffusion: SVGFusion]
+    [Layered diffusion: LayerTracer]
+  ]
+  [Hybrid
+    [Im2Vec: trained without vector supervision]
+    [T2V-NPR: trained path prior\\+ per-prompt optimization]
+  ]
+]
+\end{forest}
+\caption{Taxonomy of the thirteen analyzed models by generation 
+strategy, with representation and supervision as the second level.}
+\label{fig:taxonomy}
+\end{figure}
 
 An early line of work treats vector drawings as ordered 
 sequences of commands or strokes. Starting from 
@@ -160,6 +195,21 @@ each region needs.
 \label{fig:svgdreamer_vpsd}
 \end{figure}
 
+The two loops look alike, but they differ in what is trained. 
+In the SDS loop (Figure~\ref{fig:sds_loop}), everything except the SVG is frozen. 
+The rendered image is augmented, encoded into the latent space of Stable Diffusion 
+and noised, and the frozen diffusion model predicts the noise. The weighted difference 
+between predicted and added noise is the only signal, and it flows back through DiffVG 
+into the paths of a single SVG. In the VPSD loop (Figure~\ref{fig:svgdreamer_vpsd}), 
+the pretrained diffusion model is still frozen, but two parts are added. First, there 
+are $k$ SVGs (particles) instead of one, and a LoRA copy of the diffusion model is 
+fine-tuned on their noisy renders with its own loss. This copy learns what the current 
+particles look like, and the update for the SVG parameters comes from the difference 
+between the frozen model and the LoRA model, not from the added noise. Second, a reward 
+model scores the rendered particles and reweights them, which the authors report gives 
+better visual aesthetics and faster convergence~\cite{xingSVGDreamerTextGuided2024}. 
+So in SDS only the SVG learns. In VPSD the particles and the LoRA learn together.
+
 \subsection*{Neural Implicit Representation}
 
 NiVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} and 
@@ -187,8 +237,12 @@ network has to be optimized from scratch for every new prompt.
 \begin{table}[h!]
 \centering
 \caption{Architectural overview of optimization-based 
-SVG generation methods. Trainables refer to 
-per-instance parameters optimized at inference time.}
+SVG generation methods. Trainables: what is updated, 
+per-instance parameters optimized at inference time, 
+except for Im2Vec, whose network weights are trained once. 
+Init.: how primitives are placed before optimization. 
+Supervision: the loss that drives the update. 
+Representation: how geometry is stored while it is optimized.}
 \label{tab:arch_optbased}
 \small
 \begin{tabularx}{\textwidth}{l l l l l}

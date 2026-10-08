@@ -26,6 +26,14 @@ When optimization needs to capture fine visual detail, it adds more paths rather
 SVGDreamer++~\cite{xingSVGDreamerAdvancingEditability2025} identifies this path entanglement explicitly as a failure mode of optimization-based parametric methods.
 The representation itself is not the problem. Nothing in the optimization process stops paths from piling up, which is the real issue for editability.
 
+Which primitives do these models actually use? DiffVG can render paths, circles, ellipses, rectangles, and 
+polygons~\cite{liDifferentiableVectorGraphics2020a}. But most parametric models here use only one of them: closed paths 
+made of cubic B\'{e}zier segments. LIVE and VectorFusion use four cubic segments per 
+path~\cite{maLayerwiseImageVectorization2022, jainVectorFusionTexttoSVGAbstracting2022}, and Im2Vec decodes every shape 
+as a closed B\'{e}zier path~\cite{reddyIm2VecSynthesizingVector2021}. A closed path can look like a circle, but it is never 
+stored as one, so the file contains no \texttt{<circle>} or \texttt{<rect>} elements. SVGFusion is the exception. 
+It is trained on real SVG files and keeps their circles, rectangles, and ellipses~\cite{xingSVGFusionScalableTexttoSVG2025}.
+
 
 
 \section{Sequential Representations}
@@ -43,6 +51,11 @@ A mistake appearing early in a long sequence can break everything that comes aft
 DeepSVG trains on SVG-Icons8~\cite{carlierDeepSVGHierarchicalGenerative2020}, 
 which consists of simple icons with small path counts and the outputs reflect that constraint.
 In general most of the models that are trained on datasets have specific constraints based on dataset characteristics.
+How is the order of commands fixed? DeepSVG does not leave it to the model. In preprocessing, rectangles, circles, and 
+ellipses are converted into paths, every icon is scaled to a 256 $\times$ 256 viewbox, and each path is canonicalized: 
+it starts at its topmost-leftmost point and its commands run clockwise. In the ordered variant of the loss, the paths 
+themselves are sorted lexicographically by their start position~\cite{carlierDeepSVGHierarchicalGenerative2020}. 
+So the same icon always gives the same sequence, and the model learns one order instead of all possible ones.
 There is also a more fundamental limitation: a procedural command sequence does not encode explicit spatial hierarchy. 
 The model generates commands in order but nothing in the representation directly tells you which commands belong to which semantic region.
 
@@ -67,7 +80,7 @@ converted into discrete primitives. How clean that conversion is determines whet
 \section{Latent Representations}
 \label{sec:latent}
 
-As established in Section~\ref{sec:latent_repr}, a latent space is not a geometric representation but an organizational layer 
+As established in Section~\ref{sec:latent_repr}, a latent space is not a geometric representation but a generative layer 
 that sits on top of one. The geometry is always produced by a decoder that translates latent vectors back into parametric paths 
 or sequential commands. What the latent space contributes is compression, many graphics are mapped into a shared numerical embedding 
 learned during training. DeepSVG applies this by encoding path command sequences into latent vectors and training a transformer 

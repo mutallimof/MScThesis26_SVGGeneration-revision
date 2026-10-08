@@ -214,12 +214,30 @@ compact representations, but also makes it harder to control specific
 geometric features directly, because they are not explicitly defined as 
 parameters.   
 
+A concrete example makes the difference clearer. Take the mouth 
+in Figure~\ref{fig:svg_example}, \texttt{M 65 135 Q 100 110 135 135}. 
+A parametric representation stores its three points directly: start 
+(65,~135), control point (100,~110), and end (135,~135), plus stroke 
+width and color. Optimization changes these numbers. A sequential 
+representation turns the same curve into tokens: a move command with 
+the arguments 65 and 135, then a quadratic curve command with 100, 110, 
+135, and 135. The model has to predict them in that order. An implicit 
+representation like NeuralSVG stores none of these numbers. The mouth 
+is simply shape number 4. The MLP takes the index 4 as input and 
+outputs the control points and the color of that 
+shape~\cite{polaczekNeuralSVGImplicitRepresentation2025}. To change 
+the mouth, you change the network weights, and the numbers only appear 
+when the network is queried. NiVeL goes one step further: its network 
+takes a pixel coordinate and returns which layer covers it, so the 
+curve only appears after it is traced from the 
+field~\cite{thamizharasanNIVeLNeuralImplicit2024}.
+
 
 \subsection{Latent Representation}
 \label{sec:latent_repr}
 
-Latent representation works differently from the first three representations, 
-it is not a vector representation in the geometric sense.
+Latent representation is not a geometric representation at all. 
+It is a generative layer that sits on top of one of the other three.
 There are no control points, no path commands, no shape boundaries 
 stored anywhere. Latent space is compressing many graphics
 into a shared numerical embedding learned during training. 
@@ -273,6 +291,20 @@ possible to apply the full range of image-based supervision
 strategies, reconstruction losses, CLIP guidance, diffusion 
 priors directly to vector parameters.
 
+Not every analyzed model needs differentiable rendering. 
+DeepSVG and DeepIcon are trained directly on SVG commands, with 
+losses that compare predicted and ground-truth commands, so no 
+rasterizer is involved~\cite{carlierDeepSVGHierarchicalGenerative2020, bingDeepIconHierarchicalNetwork2024}. 
+LayerTracer generates raster construction frames with a diffusion 
+model and vectorizes them afterwards with a separate tracing 
+step~\cite{songLayerTracerCognitiveAlignedLayered2025}. NiVeL 
+optimizes implicit fields on a pixel grid and extracts curves only 
+at the end~\cite{thamizharasanNIVeLNeuralImplicit2024}. DiffVG is 
+also not the only differentiable rasterizer. B\'{e}zier Splatting, 
+for example, represents each curve as 2D Gaussians placed along it 
+and reports much faster forward and backward passes than 
+DiffVG~\cite{liuBezierSplattingFast2025}.
+
 
 
 The core idea is shown in Figure~\ref{fig:diffvg_pipeline}. 
@@ -312,6 +344,14 @@ directly~\cite{liDifferentiableVectorGraphics2020a}.}
 
 \section{Loss Functions and Semantic Guidance}
 
+The supervision signals in this section fall into two groups. 
+Reconstruction supervision compares the rendered output with a 
+target image (Section~\ref{sec:recon_losses}). Semantic supervision 
+has no target image and uses a pretrained model, CLIP or a diffusion 
+model, to judge whether the output matches a text prompt 
+(Sections~\ref{sec:clip} to~\ref{sec:sds_vsd}). 
+Chapter~\ref{ch:Landscape} uses this split to group the 
+optimization-based methods.
 
 Even when a model manipulates vector parameters internally, 
 comparing outputs in pixel space is more practical than 
