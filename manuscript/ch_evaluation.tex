@@ -8,7 +8,7 @@ that has to look right(semantical alignment), be geometrically stable, and remai
 editable. These three requirements do not always point in 
 the same direction, and the metrics most commonly used in 
 the literature only measure the first one. 
-This chapter examines how those 14 models are evaluated, which metrics are used, where those practices 
+This chapter examines how those 13 models are evaluated, which metrics are used, where those practices 
 fall short, and what a more complete framework would need 
 to include.
 
@@ -77,7 +77,7 @@ subjective and rarely reported
 with enough methodological detail to understand the ratings.
 
 Table~\ref{tab:metrics_used} maps which evaluation metrics,
-each of the fourteen models actually reports. The 
+each of the thirteen models actually reports. The 
 pattern is clear, FID and CLIP dominate text-to-SVG models, 
 MSE and LPIPS appear in vectorization models, and structural 
 metrics are almost entirely absent across both groups. 
@@ -86,7 +86,7 @@ Human evaluation is present in roughly half the papers.
 
 \begin{table}[h!]
 \centering
-\caption{Evaluation signals reported across the fourteen 
+\caption{Evaluation signals reported across the thirteen 
 models. \checkmark\,= reported, \text{--} = not reported.}
 \label{tab:metrics_used}
 \small
@@ -244,7 +244,7 @@ concerns for SVG generation, they directly determine
 whether a method can be used in practice. 
 Table~\ref{tab:reproducibility} summarizes code 
 availability, hardware requirements, and inference time 
-across all fourteen models.
+across all thirteen models.
 
 The efficiency gap between optimization-based and 
 dataset-trained methods is worth to consider. LIVE, the 
@@ -275,7 +275,7 @@ replication on untrained models.
 
 Reproducibility is a separate and equally important 
 concern for those whom wants to replicate the work.
-Four of the fourteen models have no public 
+Four of the thirteen models have no public 
 code release: SAMVG, VectorFusion, DeepIcon, and 
 SVGFusion. For these models, metrics cannot 
 be independently tested on shared test 
@@ -288,7 +288,7 @@ favorable experimental conditions.
 \begin{table}[h!]
 \centering
 \caption{Reproducibility and efficiency overview across 
-the fourteen models. Inference time is per-image 
+the thirteen models. Inference time is per-image 
 on reported hardware.}
 \label{tab:reproducibility}
 \small
@@ -392,7 +392,7 @@ relevant for industrial deployment, where generation
 speed and infrastructure cost are primary constraints.
 
 Table~\ref{tab:framework} applies these six dimensions 
-to all fourteen models based on their architectural 
+to all thirteen models based on their architectural 
 properties. Most ratings reflect design characteristics 
 rather than measured outcomes. No model scores well across all six dimensions. 
 Optimization-based methods tend to score well on 
@@ -415,7 +415,7 @@ The table maps trade-offs rather than ranking models.
 \begin{table}[h!]
 \centering
 \caption{Proposed multi-dimensional evaluation 
-framework applied to the fourteen models. 
+framework applied to the thirteen models. 
 \textbf{+} = good, \textbf{\textasciitilde} = partial, 
 \textbf{-} = bad. Ratings marked * reflect metrics 
 reported in the original paper. All other ratings are 

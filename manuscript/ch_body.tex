@@ -13,16 +13,16 @@ assumptions about what a good SVG output should look like,
 and they lead to very different trade-offs between visual
 quality and structural organization.
 
-This chapter introduces the fourteen models that form the whole thesis.
+This chapter introduces the thirteen models that form the whole thesis.
 They were selected among a broader research landscape that also includes sequence-based
 sketch models, retrieval-based vectorization systems, and large language model approaches to SVG
 synthesis. That wider context is sketched below to
 clarify where the selected models sit and why they were
-chosen. The organizing principle is simple, these fourteen
+chosen. The organizing principle is simple, these thirteen
 models together cover the full range of design decisions of models
 in two dimensions already mentioned: representation and supervision, that shape how SVG
 structure emerges from a generation pipeline. A summary of
-all fourteen models is provided in
+all thirteen models is provided in
 Table~\ref{tab:model_overview}.
 
 An early line of work treats vector drawings as ordered 
@@ -339,7 +339,7 @@ different approach to how SVG structure is encoded.
 
 
 
-Table~\ref{tab:model_overview} summarizes the fourteen models 
+Table~\ref{tab:model_overview} summarizes the thirteen models 
 analyzed in this thesis. The \textit{Inference} column 
 distinguishes between methods that optimize vector parameters 
 at inference time (\textit{Iterative Opt.}) and methods that 
@@ -358,7 +358,7 @@ sampled directly from a learned latent space).
 
 \begin{table}[h!]
 \centering
-\caption{Overview of the fourteen models analyzed in this 
+\caption{Overview of the thirteen models analyzed in this 
 thesis, organized by generation strategy.}
 \label{tab:model_overview}
 \small
@@ -395,7 +395,7 @@ Hybrid because it combines a trained diffusion model with
 a per-instance vectorization step.
 
 
-The fourteen models described here differ in representation 
+The thirteen models described here differ in representation 
 and supervision, and those two dimensions do not operate 
 independently. A model's representation constrains what 
 supervision signals are meaningful, and the choice of 
