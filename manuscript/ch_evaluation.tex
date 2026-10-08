@@ -274,12 +274,16 @@ but the training cost creates a barrier for independent
 replication on untrained models.
 
 Reproducibility is a separate and equally important 
-concern for those whom wants to replicate the work.
+concern for those who want to replicate the work.
+Code availability was recorded for every model but was not 
+a selection criterion (Section~\ref{sec:objective}). 
 Four of the thirteen models have no public 
 code release: SAMVG, VectorFusion, DeepIcon, and 
-SVGFusion. For these models, metrics cannot 
+SVGFusion. NiVeL's code is listed as pending, so five 
+models cannot currently be run from official code. 
+For these models, metrics cannot 
 be independently tested on shared test 
-sets. NiVeL's code is listed as pending. 
+sets. 
 When models cannot be run, cross-model comparisons rely 
 entirely on self-reported numbers, which may reflect 
 favorable experimental conditions. 
@@ -396,13 +400,14 @@ to all thirteen models based on their architectural
 properties. Most ratings reflect design characteristics 
 rather than measured outcomes. No model scores well across all six dimensions. 
 Optimization-based methods tend to score well on 
-semantic alignment and layer organization but poorly 
-on path economy, geometric quality, and efficiency. 
+semantic alignment but poorly on layer organization, 
+path economy, geometric quality, and efficiency. 
 Dataset-trained methods score better on efficiency 
 and path economy but vary widely on semantic alignment 
 and editability depending on training data scope. 
 Neural implicit methods occupy a middle ground which is 
-strong on geometry and layers, but slow. SVGFusion scores 
+strong on geometry and layers, but slow. They are the only 
+optimization-based methods rated well on layers. SVGFusion scores 
 well across most dimensions based on its 
 architectural design and reported metrics, but its ratings 
 cannot be independently verified because no public 
@@ -418,10 +423,13 @@ The table maps trade-offs rather than ranking models.
 framework applied to the thirteen models. 
 \textbf{+} = good, \textbf{\textasciitilde} = partial, 
 \textbf{-} = bad. Ratings marked * reflect metrics 
-reported in the original paper. All other ratings are 
+reported in the original paper (Table~\ref{tab:metrics_used}; 
+for T2V-NPR, its smoothness score). All other ratings are 
 the author's assessment based on the observations from papers and
 the architectural analysis in Chapters~\ref{ch:representation} 
-and~\ref{ch:supervision}.}
+and~\ref{ch:supervision}. Editability was not measured for any 
+model. Efficiency takes into account the hardware listed in 
+Table~\ref{tab:reproducibility}.}
 \label{tab:framework}
 \small
 \begin{tabularx}{\textwidth}{l c c c c c c}
@@ -434,22 +442,22 @@ and~\ref{ch:supervision}.}
 \midrule
 \multicolumn{7}{l}{\textit{Optimization-Based}} \\
 \midrule
-LIVE         & -*              & -*              & \textasciitilde* & - & -               & \textasciitilde \\
+LIVE         & -               & -               & \textasciitilde  & - & -               & \textasciitilde \\
 SAMVG        & -*              & \textasciitilde & \textasciitilde  & - & \textasciitilde & \textasciitilde\\
 VectorFusion & +*              & -               & -                & - & -               & \textasciitilde \\
-SVGDreamer   & +*              & \textasciitilde*& \textasciitilde  & - & \textasciitilde & \textasciitilde \\
+SVGDreamer   & +*              & \textasciitilde & \textasciitilde  & - & \textasciitilde & \textasciitilde \\
 SVGDreamer++ & +*              & \textasciitilde & +                & - & \textasciitilde & \textasciitilde \\
 NiVeL        & +               & +               & +                & + & \textasciitilde & \textasciitilde \\
-NeuralSVG    & +*              & +*              & +                & + & +               & \textasciitilde \\
+NeuralSVG    & +*              & +               & +                & + & +               & \textasciitilde \\
 Im2Vec       & \textasciitilde & \textasciitilde & \textasciitilde  & - & \textasciitilde & + \\
 \midrule
 \multicolumn{7}{l}{\textit{Dataset-Driven}} \\
 \midrule
 DeepSVG      & \textasciitilde & \textasciitilde & \textasciitilde  & - & \textasciitilde & + \\
 DeepIcon     & \textasciitilde & +               & +*               & - & \textasciitilde & + \\
-SVGFusion    & +*              & +               & +                & + & +               & + \\
-T2V-NPR      & +*              & +*              & +*               & - & \textasciitilde & - \\
-LayerTracer  & +*              & +*              & +*               & + & +*              & + \\
+SVGFusion    & +*              & +               & +                & + & +               & \textasciitilde \\
+T2V-NPR      & +*              & +               & +*               & - & \textasciitilde & - \\
+LayerTracer  & +*              & +               & +                & + & +               & \textasciitilde \\
 \bottomrule
 \end{tabularx}
 \end{table}
