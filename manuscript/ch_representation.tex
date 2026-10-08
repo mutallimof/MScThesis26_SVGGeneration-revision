@@ -51,9 +51,9 @@ A mistake appearing early in a long sequence can break everything that comes aft
 DeepSVG trains on SVG-Icons8~\cite{carlierDeepSVGHierarchicalGenerative2020}, 
 which consists of simple icons with small path counts and the outputs reflect that constraint.
 In general most of the models that are trained on datasets have specific constraints based on dataset characteristics.
-How is the order of commands fixed? DeepSVG does not leave it to the model. In preprocessing, rectangles, circles, and 
-ellipses are converted into paths, every icon is scaled to a 256 $\times$ 256 viewbox, and each path is canonicalized: 
-it starts at its topmost-leftmost point and its commands run clockwise. In the ordered variant of the loss, the paths 
+DeepSVG fixes the order of commands itself and does not leave it to the model. In preprocessing, rectangles, circles, and 
+ellipses become paths. Every icon is scaled to 256 $\times$ 256. Each path then starts at its topmost-leftmost point 
+and runs clockwise. In the ordered variant of the loss, the paths 
 themselves are sorted lexicographically by their start position~\cite{carlierDeepSVGHierarchicalGenerative2020}. 
 So the same icon always gives the same sequence, and the model learns one order instead of all possible ones.
 There is also a more fundamental limitation: a procedural command sequence does not encode explicit spatial hierarchy. 
@@ -133,6 +133,7 @@ to DeepSVG than to SVGDreamer. What differs is the vocabulary: SVGFusion can out
 B\'{e}zier paths but also circles, rectangles, and 
 ellipses~\cite{xingSVGFusionScalableTexttoSVG2025}, 
 because its latent space was trained on real SVG files that use these elements.
+Table~\ref{tab:rep_structure} summarizes these counts.
 
 \begin{figure}[htbp]
     \centering

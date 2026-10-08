@@ -139,8 +139,8 @@ DeepSVG~\cite{carlierDeepSVGHierarchicalGenerative2020} and DeepIcon~\cite{bingD
 are trained on reconstruction objectives against SVG data. Im2Vec~\cite{reddyIm2VecSynthesizingVector2021} 
 is trained on raster images instead, with reconstruction through differentiable rendering. 
 Once trained, generation requires no further optimization for any of the three. LayerTracer~\cite{songLayerTracerCognitiveAlignedLayered2025} 
-takes this further: it trains on construction sequences derived from about 20,000 layered SVGs made by designers, 
-where each graphic is rebuilt in a deliberate layer order that mimics how designers actually build graphics (Figure~\ref{fig:serpentine}). 
+takes this further: it trains on construction sequences derived from about 20,000 layered SVGs made by designers. 
+Each graphic is rebuilt in a deliberate layer order that mimics how designers actually build graphics (Figure~\ref{fig:serpentine}). 
 The dataset structure itself is the supervision prior. The model learns to produce layered outputs not because a loss function rewards 
 layering, but because every training example was built that way.
 
@@ -183,7 +183,7 @@ It uses the Segment Anything Model to define semantically meaningful
 regions before any vector optimization begins. The loss function is still pixel reconstruction, 
 same as LIVE. But SAMVG's outputs have cleaner boundaries and less path fragmentation, 
 because the starting point already encodes where objects are. The supervision signal did not change. 
-The initialization did, and that made the structural difference. 
+The initialization did, and that made the structural difference (Figure~\ref{fig:init_comparison}). 
 The two outputs look almost identical at first sight, 
 and most people would not notice a difference. But look 
 more carefully: SAMVG's output (right) has cleaner shape 

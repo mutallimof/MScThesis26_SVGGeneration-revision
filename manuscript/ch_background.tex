@@ -214,7 +214,7 @@ compact representations, but also makes it harder to control specific
 geometric features directly, because they are not explicitly defined as 
 parameters.   
 
-A concrete example makes the difference clearer. Take the mouth 
+Take the mouth 
 in Figure~\ref{fig:svg_example}, \texttt{M 65 135 Q 100 110 135 135}. 
 A parametric representation stores its three points directly: start 
 (65,~135), control point (100,~110), and end (135,~135), plus stroke 
@@ -227,7 +227,7 @@ is simply shape number 4. The MLP takes the index 4 as input and
 outputs the control points and the color of that 
 shape~\cite{polaczekNeuralSVGImplicitRepresentation2025}. To change 
 the mouth, you change the network weights, and the numbers only appear 
-when the network is queried. NiVeL goes one step further: its network 
+when the network is queried. NiVeL works the other way around: its network 
 takes a pixel coordinate and returns which layer covers it, so the 
 curve only appears after it is traced from the 
 field~\cite{thamizharasanNIVeLNeuralImplicit2024}.
@@ -466,22 +466,20 @@ the teacher.
 
 A known limitation of SDS is that results look oversaturated 
 and over-smoothed, with little fine detail. SDS only works 
-well with a very high classifier-free guidance weight, and 
-that guidance pushes colors to extremes. The loss is also 
-mode-seeking: it pulls every run toward the single most likely 
-image for the prompt, which averages away detail and 
-diversity~\cite{pooleDreamFusionTextto3DUsing2022, wangProlificDreamerHighFidelityDiverse2023}. 
-Variational Score Distillation (VSD), 
-introduced by ProlificDreamer~\cite{wangProlificDreamerHighFidelityDiverse2023} 
-for text-to-3D generation, addresses this by treating the 
-parameters as a random variable instead of a single point. 
-A few particles, each one a separate version of the output, 
-represent this distribution, and a LoRA copy of the diffusion 
-model is trained alongside them to estimate their score. 
-VSD works with normal guidance weights and gives more detailed 
-and diverse results. SVGDreamer~\cite{xingSVGDreamerTextGuided2024} 
-builds on it with Vectorized Particle-based Score Distillation 
-(VPSD), where each particle is a set of SVG parameters. Both SDS and VSD are used across several models analyzed 
+well with a very high guidance weight, and that weight pushes 
+colors to extremes. It also pulls every run toward the same 
+most likely image, so detail and variety get 
+lost~\cite{pooleDreamFusionTextto3DUsing2022, wangProlificDreamerHighFidelityDiverse2023}.
+
+Variational Score Distillation (VSD) was introduced by 
+ProlificDreamer~\cite{wangProlificDreamerHighFidelityDiverse2023} 
+for text-to-3D. Instead of one output, it keeps a few versions 
+at once, called particles. A LoRA copy of the diffusion model 
+is trained next to them and learns what they currently look 
+like. This works with normal guidance weights and gives more 
+detail and variety. SVGDreamer builds on it with Vectorized 
+Particle-based Score Distillation (VPSD), where each particle 
+is a set of SVG parameters~\cite{xingSVGDreamerTextGuided2024}. Both SDS and VSD are used across several models analyzed 
 in Chapter~\ref{ch:supervision}. The complete optimization 
 loops for SDS and VSD are shown in 
 Figures~\ref{fig:sds_loop} and~\ref{fig:svgdreamer_vpsd}, 

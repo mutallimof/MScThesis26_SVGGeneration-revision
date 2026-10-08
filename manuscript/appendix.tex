@@ -85,16 +85,16 @@ and Figure~\ref{fig:taxonomy}.
 \toprule
 \textbf{Model} & \textbf{Task Type} & \textbf{Inference} & \textbf{Input} & \textbf{Output} & \textbf{Supervision} & \textbf{Core Idea} \\
 \midrule
-VectorFusion & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup & Distills diffusion priors via differentiable rasterization. \\
+VectorFusion & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup. & Distills diffusion priors via differentiable rasterization. \\
         SVGFusion & Text-to-SVG & Forward Dec. & Text & Layers/Paths & Supervised & Continuous latent space learning using SVGX dataset. \\
-        SVGDreamer & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup & Semantic-driven vectorization (SIVE) and VPSD. \\
-        SVGDreamer++ & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup & Hierarchical optimization with adaptive primitive control. \\
-        T2V-NPR & Text-to-SVG & Hybrid & Text & Layers/Paths & Sup. + Self-Sup & Dual-branch VAE learns path latent space constraints. \\
+        SVGDreamer & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup. & Semantic-driven vectorization (SIVE) and VPSD. \\
+        SVGDreamer++ & Text-to-SVG & Iterative Opt. & Text & Paths & Self-Sup. & Hierarchical optimization with adaptive primitive control. \\
+        T2V-NPR & Text-to-SVG & Hybrid & Text & Layers/Paths & Sup. + Self-Sup. & Dual-branch VAE learns path latent space constraints. \\
         LayerTracer & Text-to-SVG & Hybrid & Text/Img & Layers/Paths & Supervised & Models designer construction logic via DiT sequences. \\
         Im2Vec & Vectorization & Forward Dec. & Image & Paths & Pixel recon. & Differentiable rasterizer allows learning from appearance. \\
         SAMVG & Vectorization & Iterative Opt. & Image & Paths & Pixel recon. & Uses SAM for semantic initialization in vectorization. \\
-        NIVeL & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Self-Sup & Implicit neural layers as optimization domain for SDS. \\
-        NeuralSVG & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Self-Sup & Scene encoded in MLP weights for layered shapes. \\
+        NIVeL & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Self-Sup. & Implicit neural layers as optimization domain for SDS. \\
+        NeuralSVG & Text-to-SVG & Iterative Opt. & Text & Layers/Paths & Self-Sup. & Scene encoded in MLP weights for layered shapes. \\
         LIVE & Vectorization & Iterative Opt. & Image & Paths & Pixel recon. & Layer-wise hierarchical optimization of vector graphs. \\
         DeepSVG & Unconditional & Forward Dec. & None & Paths & Supervised & Hierarchical Transformer for shape/command disentanglement. \\
         DeepIcon & Vectorization & Forward Dec. & Image & Layers/Paths & Supervised & Hierarchical network for direct image-to-SVG translation. \\
@@ -177,8 +177,8 @@ LayerTracer & DiT + LoRA & 20k layered SVGs & Diffusion noise & Denoising loss &
 LIVE & Yes & No & RTX 3090 & 2,600--10,000 s & Feasible on high-end consumer GPU (slow). \\
 SAMVG & No & No & RTX 3090 & 139--2,000 s & Re-implementation possible but requires effort. \\
 VectorFusion & No & No & Not specified & 10--20 min & Not reproducible due to lack of public implementation. \\
-SVGDreamer & Yes & No & V100 ($\geq$31GB VRAM) & 7--14 min & Requires high-VRAM GPU and LoRA pretraining. \\
-SVGDreamer++ & Yes & No & A800 ($\geq$31GB VRAM) & $\sim$7 min & Requires high-VRAM GPU and LoRA pretraining. \\
+SVGDreamer & Yes & No & V100 ($\geq$31GB VRAM) & 7--14 min & Requires a high-VRAM GPU; a LoRA is trained during each run. \\
+SVGDreamer++ & Yes & No & A800 ($\geq$31GB VRAM) & $\sim$7 min & Requires a high-VRAM GPU; a LoRA is trained during each run. \\
 NeuralSVG & Yes & No & Not stated & Unknown & Hardware requirements unclear. \\
 NIVeL & Pending & No & A100 & $\sim$5 min & High-end GPU required. \\
 T2V-NPR & Yes & VAE (unknown)& RTX 3090 & $\sim$13 min & Feasible on high-end consumer GPU. \\
@@ -213,7 +213,7 @@ share components and where they diverge.
     from the target image through residual analysis. SAMVG 
     adds the Segment Anything Model as a preprocessing step, 
     producing semantically meaningful initialization regions 
-    before the same optimization loop begins. Same loss, 
+    before the same optimization loop begins. Same kind of loss, 
     different starting point, different structural outcome.}
     \label{fig:opt_recon_pipelines}
 \end{figure}

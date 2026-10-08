@@ -128,10 +128,10 @@ The tension is observable in specific models.
 Methods driven by diffusion-based supervision achieve visually 
 detailed outputs by refining geometry until the rendered image 
 aligns with learned image priors. This refinement increases 
-structural complexity, but undermines usability at the same time. LIVE and VectorFusion 
-both follow this optimization pattern. LIVE represents a complex image with up to 
-256 paths added layer by layer~\cite{maLayerwiseImageVectorization2022}, and 
-VectorFusion uses 64 paths per SVG~\cite{jainVectorFusionTexttoSVGAbstracting2022}. In such a file, 
+structural complexity, but undermines usability at the same time. VectorFusion 
+uses 64 paths per SVG~\cite{jainVectorFusionTexttoSVGAbstracting2022}. LIVE shows the 
+same problem without any diffusion model: it represents a complex image with up to 
+256 paths added layer by layer~\cite{maLayerwiseImageVectorization2022}. In such a file, 
 selecting or modifying a single visual component requires 
 unlimited patience. SVGDreamer++ explicitly acknowledges this 
 failure, noting that optimization-based approaches produce 
@@ -224,11 +224,10 @@ data covers.
 
 Domain coverage is a related limitation. Dataset-trained 
 models only generate what they were trained on: icons 
-(DeepSVG, DeepIcon), stylized graphics (T2V-NPR), or 
+(DeepSVG, DeepIcon) or 
 the SVGX corpus 
 (SVGFusion)~\cite{carlierDeepSVGHierarchicalGenerative2020, 
 bingDeepIconHierarchicalNetwork2024, 
-zhangTexttoVectorGenerationNeural2024, 
 xingSVGFusionScalableTexttoSVG2025}. Optimization-based 
 methods handle broader domains through diffusion priors 
 but with the structural costs described in 

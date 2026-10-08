@@ -170,10 +170,7 @@ designer" capitalization, and "dependent to".
 13. **SVGFusion version.** arXiv v3 is retitled "SVGFusion: A VAE-Diffusion Transformer for Vector Graphic Generation"
     and has more authors (Xing, Hu, Xue, Zhang, Li, Wang, Xu, Yu). The thesis cites v2, marked "(v2)". Decide whether
     to switch.
-14. **arXiv:2604.08809.** This paper is real: Zhu, Deganutti, Hirsch, Mehta, "Structural Evaluation Metrics for SVG
-    Generation via Leave-One-Out Analysis", Apr 2026. It proposes element-level leave-one-out metrics (purity,
-    coverage, compactness, locality) and is directly related to Chapter 6. It was not cited, so I removed it from the
-    bib. Decide whether to cite it in §6.4. No discussion was added.
+14. **arXiv:2604.08809.** Resolved in the self-review round: cited in §6.1 with one sentence (see below).
 15. **Partly verified page numbers.** DeepIcon pp. 70–77 comes from a single listing. Pages are omitted for OmniSVG,
     NeRF and LayerTracer.
 
@@ -188,3 +185,46 @@ designer" capitalization, and "dependent to".
   - moving the appendix pipeline diagrams into the main text
 - **Remaining overfull boxes.** They are small or pre-existing: the TOC page break, the declaration URL, and three
   of 1–8 pt in body paragraphs. None hides text.
+
+## Self-review round (after your confirmation)
+
+Must-fix items applied:
+1. Efficiency definition (§6.4.6) now says training hardware counts for dataset-trained models (option a).
+2. Table 6.2: SVGFusion and LayerTracer hardware marked "(train)"; the caption explains the label.
+3. §6.4.7: the efficiency and path-economy sentences now match Table 6.3. "Poorly on efficiency" for the
+   optimization methods became "mostly only partial", and geometric quality became "mixed".
+4. LIVE/SAMVG "the loss function is the same" → "the same kind, pixel reconstruction" (§3.1 and Fig. C.1 caption).
+5. §7.3 domain list: T2V-NPR removed (it is a hybrid trained on FIGR-8-SVG icons).
+6. Appendix B.4: "LoRA pretraining" → "a LoRA is trained during each run" (SVGDreamer, SVGDreamer++).
+7. Fig. 5.3 is now cited in §5.5. Table 4.1 is now cited in §4.6.
+8. Style rewrites:
+   - SDS vs. VPSD comparison: two shorter paragraphs, closing summary line dropped
+   - SDS/VSD paragraph in §2.4.4: split in two and plainer
+   - Im2Vec trainables paragraph after Table 3.1: tightened
+
+Optional items applied:
+- "A concrete example…" opener removed; "NiVeL works the other way around".
+- §4.2: the question opener became a plain sentence, and the DeepSVG preprocessing sentence was split. The question at
+  §4.1 is kept.
+- LayerTracer sentence in §5.4 split.
+- RQ6 now reads "my assessment, they were not measured".
+- §7.2: LIVE is no longer presented as a diffusion-supervised method. It "shows the same problem without any
+  diffusion model".
+- "Self-Sup." unified in Appendix B.1.
+- readme.md:
+  - 13 models with the taxonomy split
+  - correct six dimensions
+  - table numbers updated (7.2, 6.3)
+  - "50+ papers" replaced by the actual reference count (48)
+  - DiffSketcher removed
+
+New content:
+- One sentence in §6.1 after the SVGEditBench/SVGenius discussion, citing Zhu, Deganutti, Hirsch and Mehta,
+  "Structural Evaluation Metrics for SVG Generation via Leave-One-Out Analysis" (arXiv:2604.08809, Apr 2026).
+- The bib entry is restored as `@misc` with the eprint. Title and authors were verified via search results that quote
+  the arXiv page.
+- I placed the sentence after "However, both benchmarks…" so that this sentence still refers to the two benchmarks.
+
+Unchanged: Table 3.3 placement.
+The build has no errors and no undefined references. It still has 80 pages, and the remaining overfull boxes are the
+same pre-existing ones listed above.

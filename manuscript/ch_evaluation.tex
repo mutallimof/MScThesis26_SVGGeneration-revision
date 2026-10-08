@@ -152,6 +152,9 @@ generation dimensions. However, both benchmarks are
 designed primarily for LLM-based SVG processing, and 
 neither addresses the structural properties of 
 optimization-based or dataset-trained generation methods. 
+Zhu et al.~\cite{zhuStructuralEvaluationMetrics2026} go further 
+and measure structure directly: they remove one element at a time and score each 
+element by how much the render changes. 
 
 
 
@@ -295,8 +298,8 @@ favorable experimental conditions.
 \begin{table}[htbp]
 \centering
 \caption{Reproducibility and efficiency overview across 
-the thirteen models. Inference time is per-image 
-on reported hardware. The hybrids Im2Vec and T2V-NPR 
+the thirteen models. Inference time is per-image. 
+Hardware as reported; (train) marks training hardware. The hybrids Im2Vec and T2V-NPR 
 (Figure~\ref{fig:taxonomy}) are listed with the family 
 they share most components with.}
 \label{tab:reproducibility}
@@ -321,9 +324,9 @@ Im2Vec       & Public   & Not stated      & Unknown         \\
 \midrule
 DeepSVG      & Public   & 2$\times$1080Ti (train) & Unknown  \\
 DeepIcon     & None     & Not stated      & Unknown         \\
-SVGFusion    & None     & Multi-A800      & 24--36 s        \\
+SVGFusion    & None     & Multi-A800 (train) & 24--36 s     \\
 T2V-NPR      & Public   & RTX 3090        & $\sim$13 min    \\
-LayerTracer  & Public   & A100 (80GB)     & 27--34 s        \\
+LayerTracer  & Public   & A100 80GB (train) & 27--34 s      \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -404,7 +407,10 @@ What hardware and time does
 generation require? Table~\ref{tab:reproducibility} 
 provides the data. This dimension is especially 
 relevant for industrial deployment, where generation 
-speed and infrastructure cost are primary constraints.
+speed and infrastructure cost are primary constraints. 
+For dataset-trained models, training counts too. A model 
+that needs an A100 or several A800 GPUs to train is hard 
+to reproduce, even if inference takes seconds.
 
 \subsection{Applying the Framework}
 
@@ -413,11 +419,14 @@ to all thirteen models based on their architectural
 properties. Most ratings reflect design characteristics 
 rather than measured outcomes. No model scores well across all six dimensions. 
 Optimization-based methods tend to score well on 
-semantic alignment but poorly on layer organization, 
-path economy, geometric quality, and efficiency. 
-Dataset-trained methods score better on efficiency 
-and path economy but vary widely on semantic alignment 
-and editability depending on training data scope. 
+semantic alignment but poorly on layer organization 
+and path economy, and they are mixed on geometric quality. 
+On efficiency most of them are only partial. 
+Dataset-trained methods are fast at inference and score 
+better on path economy. On efficiency only DeepSVG and 
+DeepIcon score well once training hardware counts. They 
+vary widely on semantic alignment and editability 
+depending on training data scope. 
 Neural implicit methods occupy a middle ground which is 
 strong on geometry and layers, but slow. They are the only 
 optimization-based methods rated well on layers. SVGFusion scores 
