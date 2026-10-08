@@ -15,6 +15,32 @@ neither dimension explains the structural properties of the output on its own.
 
 Table~\ref{tab:supervision_overview} provides a complete overview of which signal each model uses and when it is applied.
 
+\begin{table}[htbp]
+\centering
+\caption{Supervision signals used by each of the thirteen models 
+analyzed in this thesis.}
+\label{tab:supervision_overview}
+\begin{tabular}{l l l}
+\hline
+\textbf{Model} & \textbf{Supervision Signal} & \textbf{Applied} \\
+\hline
+LIVE & UDF pixel loss + Xing loss & Inference \\
+SAMVG & MSE + LPIPS + SAM segmentation init & Inference \\
+Im2Vec & L2 via differentiable rendering & Training \\
+VectorFusion & SDS from Stable Diffusion & Inference \\
+SVGDreamer & VPSD from Stable Diffusion & Inference \\
+SVGDreamer++ & VPSD + HIVE masks + reward model & Inference \\
+NeuralSVG & SDS + fine-tuned LoRA adapter & Inference \\
+NiVeL & SDS from Stable Diffusion & Inference \\
+DeepSVG & Cross-entropy + L1 + KL divergence & Training \\
+DeepIcon & Cross-entropy + CLIP embedding & Training \\
+SVGFusion & KL + latent-space denoising (VS-DiT) & Training \\
+T2V-NPR & VSD + neural path VAE & Both \\
+LayerTracer & Denoising on layered construction sequences & Training \\
+\hline
+\end{tabular}
+\end{table}
+
 
 \section{Reconstruction-Based Supervision}
 \label{sec:recon_supervision}
@@ -82,15 +108,15 @@ optimization tends to add more primitives to satisfy visual objectives.
 Inference cost is also high, every generation requires repeated rendering and 
 diffusion evaluation cycles, unlike dataset-trained models that produce output in a single pass.
 
-\begin{figure}[ht]
+\begin{figure}[htbp]
     \centering
     \begin{tabular}{ccc}
     \textbf{VectorFusion} & \textbf{SVGDreamer} & \textbf{NeuralSVG} \\
     \small{SDS} & \small{VPSD} & 
     \small{SDS + LoRA} \\[4pt]
-    \includegraphics[width=0.3\textwidth]{vectorfusion_img.png} &
-    \includegraphics[width=0.3\textwidth]{svgdreamer256_img.png} &
-    \includegraphics[width=0.3\textwidth]{neuralsvg16_img.png} \\
+    \includegraphics[width=0.25\textwidth]{vectorfusion_img.png} &
+    \includegraphics[width=0.25\textwidth]{svgdreamer256_img.png} &
+    \includegraphics[width=0.25\textwidth]{neuralsvg16_img.png} \\
     \end{tabular}
     \caption{Three diffusion-based supervision variants generating 
     from the same prompt. VectorFusion (SDS, 64 shapes) produces 
@@ -118,7 +144,7 @@ where each graphic is rebuilt in a deliberate layer order that mimics how design
 The dataset structure itself is the supervision prior. The model learns to produce layered outputs not because a loss function rewards 
 layering, but because every training example was built that way.
 
-\begin{figure}[ht]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{latertracer trng.png}
     \caption{Step-by-step construction sequence from the training 
@@ -145,31 +171,7 @@ which takes 24 to 36 seconds per SVG.
 
 
 
-\begin{table}[ht]
-\centering
-\caption{Supervision signals used by each of the thirteen models 
-analyzed in this thesis.}
-\label{tab:supervision_overview}
-\begin{tabular}{l l l}
-\hline
-\textbf{Model} & \textbf{Supervision Signal} & \textbf{Applied} \\
-\hline
-LIVE & UDF pixel loss + Xing loss & Inference \\
-SAMVG & MSE + LPIPS + SAM segmentation init & Inference \\
-Im2Vec & L2 via differentiable rendering & Training \\
-VectorFusion & SDS from Stable Diffusion & Inference \\
-SVGDreamer & VPSD from Stable Diffusion & Inference \\
-SVGDreamer++ & VPSD + HIVE masks + reward model & Inference \\
-NeuralSVG & SDS + fine-tuned LoRA adapter & Inference \\
-NiVeL & SDS from Stable Diffusion & Inference \\
-DeepSVG & Cross-entropy + L1 + KL divergence & Training \\
-DeepIcon & Cross-entropy + CLIP embedding & Training \\
-SVGFusion & KL + latent-space denoising (VS-DiT) & Training \\
-T2V-NPR & VSD + neural path VAE & Both \\
-LayerTracer & Denoising on layered construction sequences & Training \\
-\hline
-\end{tabular}
-\end{table}
+
 
 
 \section{Initialization and Structural Priors}
@@ -191,13 +193,13 @@ through denser path layering. The visual fidelity is
 slightly higher in LIVE, but that fidelity comes from 
 path fragmentation that makes the file harder to edit.
 
-\begin{figure}[ht]
+\begin{figure}[htbp]
     \centering
     \begin{tabular}{cc}
     \textbf{LIVE} & \textbf{SAMVG} \\
     \textbf{Error-driven init} & \textbf{SAM segmentation init} \\[4pt]
-    \includegraphics[width=0.4\textwidth]{live_img.png} &
-    \includegraphics[width=0.4\textwidth]{sam_img.png} \\
+    \includegraphics[width=0.36\textwidth]{live_img.png} &
+    \includegraphics[width=0.36\textwidth]{sam_img.png} \\
     \end{tabular}
     \caption{Both models use pixel reconstruction loss via 
     differentiable rasterization. LIVE adds each new path where 

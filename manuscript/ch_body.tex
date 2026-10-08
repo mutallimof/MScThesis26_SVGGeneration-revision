@@ -132,7 +132,7 @@ but differs in what loss drives it and how geometry is represented.
 Table~\ref{tab:arch_optbased} summarizes how each 
 model in this group implements those differently.
 
-\subsection*{Reconstruction-Supervised}
+\subsection{Reconstruction-Supervised}
 
 LIVE~\cite{maLayerwiseImageVectorization2022} is the simplest form of optimization-based vectorization. 
 It starts from an empty canvas, finds where the biggest visual gap is between the current SVG and the target image, 
@@ -149,7 +149,7 @@ using differentiable rendering and reconstruction loss during training. The trai
 the model never sees an SVG~\cite{reddyIm2VecSynthesizingVector2021}. At inference there is no iterative refinement. 
 It is included here because its core contribution is the training objective, not a learned generative model over SVG structure.
 
-\subsection*{Semantic-Supervised}
+\subsection{Semantic-Supervised}
 
 When no target image exists, the optimization loop needs a different 
 kind of signal. These methods use a pretrained diffusion model to judge whether the 
@@ -180,7 +180,7 @@ or remove primitives during generation based on how much detail
 each region needs.
 
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{SDS.png}
 \caption{SDS optimization loop in VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022}.}
@@ -188,7 +188,7 @@ each region needs.
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{VPSD!.png}
 \caption{VPSD optimization loop in SVGDreamer~\cite{xingSVGDreamerTextGuided2024}.}
@@ -210,7 +210,7 @@ model scores the rendered particles and reweights them, which the authors report
 better visual aesthetics and faster convergence~\cite{xingSVGDreamerTextGuided2024}. 
 So in SDS only the SVG learns. In VPSD the particles and the LoRA learn together.
 
-\subsection*{Neural Implicit Representation}
+\subsection{Neural Implicit Representation}
 
 NiVeL~\cite{thamizharasanNIVeLNeuralImplicit2024} and 
 NeuralSVG~\cite{polaczekNeuralSVGImplicitRepresentation2025} take 
@@ -234,7 +234,7 @@ both tend to be cleaner and more organized than purely
 parametric optimization, but inference is slower because the 
 network has to be optimized from scratch for every new prompt.
 
-\begin{table}[h!]
+\begin{table}[htbp]
 \centering
 \caption{Architectural overview of optimization-based 
 SVG generation methods. Trainables: what is updated, 
@@ -244,19 +244,19 @@ Init.: how primitives are placed before optimization.
 Supervision: the loss that drives the update. 
 Representation: how geometry is stored while it is optimized.}
 \label{tab:arch_optbased}
-\small
-\begin{tabularx}{\textwidth}{l l l l l}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l l l l X@{}}
 \toprule
 \textbf{Model} & \textbf{Trainables} & \textbf{Init.} 
 & \textbf{Supervision} & \textbf{Representation} \\
 \midrule
-LIVE         & SVG parameters      & Error-driven     
+LIVE         & SVG param.          & Error-driven     
              & Pixel recon.        & Parametric       \\
-SAMVG        & SVG parameters      & Mask-based       
+SAMVG        & SVG param.          & Mask-based       
              & Pixel recon.        & Parametric       \\
 Im2Vec       & Encoder + RNN       & Image encoding   
              & Pixel recon.        & Parametric paths \\
-VectorFusion & SVG parameters      & Random/Trace     
+VectorFusion & SVG param.          & Random/Trace     
              & SDS                 & Parametric       \\
 SVGDreamer   & SVG param. + LoRA   & Attention (SIVE) 
              & VPSD                & Parametric       \\
@@ -359,14 +359,14 @@ Table~\ref{tab:arch_dataset} summarizes the
 architectural components of the dataset-driven 
 methods.
 
-\begin{table}[h!]
+\begin{table}[htbp]
 \centering
 \caption{Architectural overview of dataset-driven 
 SVG generation methods. Training data refers to 
 the dataset used for offline model training.}
 \label{tab:arch_dataset}
-\small
-\begin{tabularx}{\textwidth}{l l l l l}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l l l l X@{}}
 \toprule
 \textbf{Model} & \textbf{Trainables} & \textbf{Data} 
 & \textbf{Supervision} & \textbf{Representation} \\
@@ -412,13 +412,13 @@ output), \textit{Text-to-SVG} (text prompt as input), and
 \textit{Unconditional Generation} (no input at inference --- SVG 
 sampled directly from a learned latent space).
 
-\begin{table}[h!]
+\begin{table}[htbp]
 \centering
 \caption{Overview of the thirteen models analyzed in this 
 thesis, organized by generation strategy.}
 \label{tab:model_overview}
-\small
-\begin{tabularx}{\textwidth}{l l l l l l}
+\footnotesize
+\begin{tabularx}{\textwidth}{l l l l l X}
 \toprule
 \textbf{Model} & \textbf{Task} & \textbf{Inference} & 
 \textbf{Input} & \textbf{Output} & \textbf{Supervision} \\

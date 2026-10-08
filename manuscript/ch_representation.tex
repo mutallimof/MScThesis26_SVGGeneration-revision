@@ -134,18 +134,36 @@ B\'{e}zier paths but also circles, rectangles, and
 ellipses~\cite{xingSVGFusionScalableTexttoSVG2025}, 
 because its latent space was trained on real SVG files that use these elements.
 
-\begin{table}[h!]
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.42\textwidth]{representation.png}
+    \caption{Rockets illustrating the four representation 
+    families. Top left: a rocket icon from the SVG-Icons8 
+    dataset that DeepSVG (sequential) is trained 
+    on~\cite{carlierDeepSVGHierarchicalGenerative2020}; this 
+    is a dataset sample, not a DeepSVG output. The other three 
+    are generated outputs. Top 
+    right: SVGDreamer (parametric). Bottom left: SVGFusion 
+    (latent). Bottom right: NeuralSVG (implicit neural). The 
+    SVGDreamer and SVGFusion outputs are reproduced 
+    from~\cite{xingSVGFusionScalableTexttoSVG2025}, the NeuralSVG 
+    output 
+    from~\cite{polaczekNeuralSVGImplicitRepresentation2025}.}
+    \label{fig:rocket_grid}
+\end{figure}
+
+\begin{table}[htbp]
 \centering
-\caption{Structural consequences of representation choice across the four families. Path counts reflect default configurations reported in the respective papers.}
+\caption{Structural consequences of representation choice across the four families. Path counts reflect default configurations reported in the respective papers; n.r.\ = not reported.}
 \label{tab:rep_structure}
-\begin{tabular}{l l l l}
+\begin{tabular}{l l l p{5.6cm}}
 \hline
 \textbf{Representation} & \textbf{Path Counts} & \textbf{Editability} & \textbf{Typical Output} \\
 \hline
 Parametric      & 64--512   & Low    & Visually rich, paths overlap heavily \\
 Sequential      & 15--30    & Medium & Clean icons, breaks on complex scenes \\
 Implicit neural & 16 (fixed)& High   & Few shapes, each semantically meaningful \\
-Latent          & Few (not reported) & Medium & Uses full SVG vocab, looks designed \\
+Latent          & Few (n.r.) & Medium & Uses full SVG vocab, looks designed \\
 \hline
 \end{tabular}
 \end{table}
@@ -171,21 +189,3 @@ Representation sets the boundaries for what a model can produce.
 What it actually produces depends on supervision. 
 The next chapter looks at how different supervision
 signals push the geometry in different directions.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.50\textwidth]{representation.png}
-    \caption{Rockets illustrating the four representation 
-    families. Top left: a rocket icon from the SVG-Icons8 
-    dataset that DeepSVG (sequential) is trained 
-    on~\cite{carlierDeepSVGHierarchicalGenerative2020}; this 
-    is a dataset sample, not a DeepSVG output. The other three 
-    are generated outputs. Top 
-    right: SVGDreamer (parametric). Bottom left: SVGFusion 
-    (latent). Bottom right: NeuralSVG (implicit neural). The 
-    SVGDreamer and SVGFusion outputs are reproduced 
-    from~\cite{xingSVGFusionScalableTexttoSVG2025}, the NeuralSVG 
-    output 
-    from~\cite{polaczekNeuralSVGImplicitRepresentation2025}.}
-    \label{fig:rocket_grid}
-\end{figure}

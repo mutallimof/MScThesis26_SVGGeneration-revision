@@ -26,6 +26,9 @@
                 ]{biblatex}
     \DeclareDelimFormat{nameyeardelim}{\addcomma\space} % comma to separate name and year in cite command
     \addbibresource{references.bib} % your bibliography file
+    \setcounter{biburllcpenalty}{7000} % allow line breaks in long URLs
+    \setcounter{biburlucpenalty}{8000}
+    \setcounter{biburlnumpenalty}{9000}
 
     \input{custom_commands.tex}
 
