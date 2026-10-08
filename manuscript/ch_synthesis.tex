@@ -2,7 +2,7 @@
 \label{ch:synthesis}
 
 The previous chapters analyzed representation and supervision 
-separately. This chapter discuss their impact to final output together.
+separately. This chapter discusses their combined impact on the final output.
 The goal is to compare the methods directly, explain why some 
 produce clean, editable SVGs while others produce visually 
 rich outputs that fall apart when you try to edit them.
@@ -15,12 +15,12 @@ what conditions are required to produce usable SVG output.
 \section{How Representation and Supervision Shape Structure}
 \label{sec:rep_sup_interaction}
 
-As already mentioned in the previous chapters that 
+As already mentioned in the previous chapters, 
 representation and supervision do not work independently. 
 Choices of each one depend on the other and together they determine the structure of the output.  
 Changing the representation under the same supervision signal 
-produces a completely different output. Also choice of same representation, changing the supervision signal, 
-immediately impact the result. 
+produces a completely different output. Also, keeping the same representation and changing the supervision signal 
+immediately impacts the result. 
 Table~\ref{tab:representation_outcomes} maps these combinations across 
 all analyzed models.
 
@@ -74,10 +74,10 @@ However, NeuralSVG uses the same kind of signal running it through
 an implicit neural representation and gets comparable 
 visual quality with 16 
 shapes~\cite{polaczekNeuralSVGImplicitRepresentation2025},
-which fewer primitives or shapes means, better SVG file.
+and fewer primitives or shapes mean a better SVG file.
 Just changing the representation alone changed the entire structural character of the output.
 
-Reconstruction losses shows the same example from a different 
+Reconstruction losses show the same example from a different 
 angle. LIVE and SAMVG both minimize pixel error through 
 DiffVG~\cite{maLayerwiseImageVectorization2022, 
 zhuSAMVGMultistageImage2023}. Same kind of loss function. But LIVE 
@@ -94,7 +94,7 @@ DeepSVG and DeepIcon produce clean, compact
 icons because the SVG-Icons8 dataset contains simple graphics 
 with small path 
 counts~\cite{carlierDeepSVGHierarchicalGenerative2020}. The 
-reconstruction loss teach them to be tidy through the data.
+reconstruction loss teaches them to be tidy through the data.
 LayerTracer pushes this further: its training data 
 encodes step-by-step construction order, so the model picks 
 up layering as a convention rather than discovering it through 
@@ -109,14 +109,14 @@ zhangTexttoVectorGenerationNeural2024}.
 Representations that constrain 
 decomposition (implicit fields, learned latent spaces, layered 
 sequences) produce cleaner outputs than 
-representations that not limited primitive count, 
+representations that do not limit primitive count, 
 regardless of the supervision signal 
 (Table~\ref{tab:rep_structure}). And supervision operating 
 within a structured representation space produces more stable 
 geometry than supervision operating directly in pixel space. 
 NeuralSVG with SDS inside an implicit representation and 
-T2V-NPR with VSD inside a learned path latent both are  
-example to this~\cite{polaczekNeuralSVGImplicitRepresentation2025, 
+T2V-NPR with VSD inside a learned path latent are both 
+examples of this~\cite{polaczekNeuralSVGImplicitRepresentation2025, 
 zhangTexttoVectorGenerationNeural2024}.
 
 \section{The Realism--Editability Trade-off}
@@ -178,13 +178,13 @@ Table~\ref{tab:framework} makes this trade-off
 quantifiable, models that score highest on semantic 
 alignment (VectorFusion, SVGDreamer) consistently 
 score lowest on path economy.
-Models that constrain representation tend to produce outputs where fewer primitves are used. 
+Models that constrain representation tend to produce outputs where fewer primitives are used. 
 NeuralSVG represents complex scenes using a small 
 fixed number of shapes, improving usability despite reduced 
 photorealistic detail~\cite{polaczekNeuralSVGImplicitRepresentation2025}. 
-But even though it is contrained to certain number of shapes, 
-its visual quality as showed in~\ref{fig:supervision_comparison} 
-is not falling behind from the compared models, in terms of photorealistic quality.
+But even though it is constrained to a certain number of shapes, 
+its visual quality, as shown in Figure~\ref{fig:supervision_comparison}, 
+does not fall behind the compared models, in terms of photorealistic quality.
 
 
 \section{Conditions for Clean and Editable SVG}

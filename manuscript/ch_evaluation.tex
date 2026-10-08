@@ -4,7 +4,7 @@
 Evaluating SVG generation is harder than evaluating raster 
 image generation. A raster image is just pixels, the only thing that matters is how it looks.
 An SVG is a structured artifact 
-that has to look right(semantical alignment), be geometrically stable, and remain 
+that has to look right (semantic alignment), be geometrically stable, and remain 
 editable. These three requirements do not always point in 
 the same direction, and the metrics most commonly used in 
 the literature only measure the first one. 
@@ -76,7 +76,7 @@ properties that numerical metrics miss, but they are
 subjective and rarely reported 
 with enough methodological detail to understand the ratings.
 
-Table~\ref{tab:metrics_used} maps which evaluation metrics,
+Table~\ref{tab:metrics_used} maps which evaluation metrics
 each of the thirteen models actually reports. The 
 pattern is clear, FID and CLIP dominate text-to-SVG models, 
 MSE and LPIPS appear in vectorization models, and structural 
@@ -250,7 +250,7 @@ availability, hardware requirements, and inference time
 across all thirteen models.
 
 The efficiency gap between optimization-based and 
-dataset-trained methods is worth to consider. LIVE, the 
+dataset-trained methods is worth considering. LIVE, the 
 simplest reconstruction-supervised method, requires 
 between 2,600 and 10,000 seconds per image on an RTX 
 3090 depending on path count~\cite{maLayerwiseImageVectorization2022}. 
@@ -263,7 +263,7 @@ hardware~\cite{xingSVGDreamerTextGuided2024,xingSVGDreamerAdvancingEditability20
 By contrast, LayerTracer generates a layered SVG in 27 
 to 34 seconds~\cite{songLayerTracerCognitiveAlignedLayered2025}, 
 and SVGFusion in 24 to 36 
-seconds~\cite{xingSVGFusionScalableTexttoSVG2025}. That differences are not small. 
+seconds~\cite{xingSVGFusionScalableTexttoSVG2025}. These differences are not small. 
 Optimization-based methods take minutes to hours because they refine parameters iteratively at inference time.
 Dataset-trained models do it in seconds through a single forward pass.
 
@@ -274,7 +274,7 @@ training, such as, SVGFusion trains on multiple A800 GPUs, and
 LayerTracer on a single A100 with 80GB VRAM. Once trained, 
 these models can run inference on less demanding hardware, 
 but the training cost creates a barrier for independent 
-replication on untrained models.
+replication of these models.
 
 Reproducibility is a separate and equally important 
 concern for those who want to replicate the work.
