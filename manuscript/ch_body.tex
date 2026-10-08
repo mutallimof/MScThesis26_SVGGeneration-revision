@@ -87,7 +87,10 @@ What varies across methods in this family is what that
 supervision signal is and how geometry is represented
 during optimization.
 
-All of them rely on DiffVG~\cite{liDifferentiableVectorGraphics2020a} to work.
+Almost all of them rely on DiffVG~\cite{liDifferentiableVectorGraphics2020a} to work. 
+NiVeL is the exception: it optimizes implicit fields that are evaluated on a pixel grid 
+and only turned into curves afterwards with marching squares, so DiffVG is not part of 
+its optimization loop~\cite{thamizharasanNIVeLNeuralImplicit2024}.
 The optimization loop across all methods 
 follows the same render-compare-update cycle, 
 but differs in what loss drives it and how geometry is represented.
@@ -120,8 +123,8 @@ behind this is Score Distillation Sampling
 (SDS)~\cite{pooleDreamFusionTextto3DUsing2022}, originally developed 
 for text-to-3D generation and described in 
 Section~\ref{sec:sds_vsd}: render the SVG, add noise, let the 
-diffusion model predict what the clean version should look like and 
-use the difference as a gradient to update the SVG parameters.
+diffusion model predict that noise and 
+use the difference between predicted and added noise as a gradient to update the SVG parameters.
 
 VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022} was 
 among the first to apply SDS to SVG generation, using Stable 

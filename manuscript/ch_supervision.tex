@@ -62,9 +62,10 @@ These methods use a pretrained diffusion model as a perceptual prior, instead of
 The diffusion model has already learned what images should look like. 
 The SVG parameters get adjusted until the diffusion model thinks the rendered output looks right for the given text prompt.
 
-The mechanism is Score Distillation Sampling (SDS), with Variational Score Distillation (VSD) 
-introduced by SVGDreamer~\cite{xingSVGDreamerTextGuided2024} to address the oversaturation 
-that standard SDS tends to produce. Both are described in Section~\ref{sec:sds_vsd}. 
+The mechanism is Score Distillation Sampling (SDS). Variational Score Distillation (VSD) 
+was introduced by ProlificDreamer~\cite{wangProlificDreamerHighFidelityDiverse2023} to address the oversaturation 
+that standard SDS tends to produce, and SVGDreamer~\cite{xingSVGDreamerTextGuided2024} builds its VPSD on it. 
+Both are described in Section~\ref{sec:sds_vsd}. 
 What matters for this chapter is what each variant does to the geometry.
 
 VectorFusion and NiVeL use standard SDS~\cite{jainVectorFusionTexttoSVGAbstracting2022, thamizharasanNIVeLNeuralImplicit2024}. 

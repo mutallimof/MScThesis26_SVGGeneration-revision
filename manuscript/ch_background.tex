@@ -415,23 +415,33 @@ graphics by VectorFusion~\cite{jainVectorFusionTexttoSVGAbstracting2022},
 uses a pretrained text-conditioned diffusion model as an 
 optimization signal. The current SVG is rendered to an 
 image, noise is added according to the diffusion schedule, 
-and the diffusion model predicts the denoised version 
+and the diffusion model predicts which noise was added, 
 conditioned on the text prompt. The difference between 
-the noisy image and the predicted denoising defines a 
+the predicted noise and the noise that was actually added, 
+weighted according to the timestep, defines a 
 gradient, which is backpropagated through the rasterizer 
 to update the SVG parameters. No ground-truth image is 
 required, the diffusion model's learned prior acts as 
 the teacher.
 
-A known limitation of SDS is oversaturation: because the 
-gradient update treats the rendered image as if it were 
-pure noise, results tend to be over-smoothed and lack 
-fine detail. Variational Score Distillation (VSD), 
-introduced in SVGDreamer~\cite{xingSVGDreamerTextGuided2024}, 
-addresses this by modeling the rendered output as a 
-particle in a distribution rather than treating it as 
-noise directly. This produces more stable gradients and 
-visually consistent results. Both SDS and VSD are used across several models analyzed 
+A known limitation of SDS is that results look oversaturated 
+and over-smoothed, with little fine detail. SDS only works 
+well with a very high classifier-free guidance weight, and 
+that guidance pushes colors to extremes. The loss is also 
+mode-seeking: it pulls every run toward the single most likely 
+image for the prompt, which averages away detail and 
+diversity~\cite{pooleDreamFusionTextto3DUsing2022, wangProlificDreamerHighFidelityDiverse2023}. 
+Variational Score Distillation (VSD), 
+introduced by ProlificDreamer~\cite{wangProlificDreamerHighFidelityDiverse2023} 
+for text-to-3D generation, addresses this by treating the 
+parameters as a random variable instead of a single point. 
+A few particles, each one a separate version of the output, 
+represent this distribution, and a LoRA copy of the diffusion 
+model is trained alongside them to estimate their score. 
+VSD works with normal guidance weights and gives more detailed 
+and diverse results. SVGDreamer~\cite{xingSVGDreamerTextGuided2024} 
+builds on it with Vectorized Particle-based Score Distillation 
+(VPSD), where each particle is a set of SVG parameters. Both SDS and VSD are used across several models analyzed 
 in Chapter~\ref{ch:supervision}. The complete optimization 
 loops for SDS and VSD are shown in 
 Figures~\ref{fig:sds_loop} and~\ref{fig:svgdreamer_vpsd}, 
